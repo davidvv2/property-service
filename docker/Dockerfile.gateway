@@ -1,0 +1,16 @@
+FROM golang:1.24 AS builder
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y pkg-config libmongocrypt-dev
+
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=1 GOOS=linux go build -tags="cse" -o property-service-gateway ./cmd/gateway
+
+FROM debian:bookworm-slim
+WORKDIR /root/
+RUN apt-get update && apt-get install -y libssl3 libbson-1.0-0 ca-certificates
+COPY --from=builder [libmongocrypt.so.0](http://_vscodecontentref_/2) /usr/lib/
+COPY --from=builder /app/property-service-gateway .
+CMD ["./property-service-gateway"]

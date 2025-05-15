@@ -1,0 +1,4 @@
+*.json
+*.pem
+*.env
+*.key

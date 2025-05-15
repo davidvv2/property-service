@@ -1,0 +1,155 @@
+package adapters
+
+import (
+	"context"
+
+	"property-service/internal/properties/domain/property"
+	"property-service/pkg/errors"
+	"property-service/pkg/errors/codes"
+	"property-service/pkg/errors/translation"
+	"property-service/pkg/infrastructure/database"
+	"property-service/pkg/infrastructure/log"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
+
+// Verify that PropertyRepositoryMongoImpl implements property.Repository.
+var _ property.Repository = (*PropertyRepositoryMongoImpl)(nil)
+
+type PropertyRepositoryMongoImpl struct {
+	log      log.Logger
+	property database.FinderInserterUpdaterRemover[
+		bson.M,
+		bson.M,
+		property.Property,
+	]
+
+	queryHelper database.QueryHelper[
+		database.Query[string],
+		database.TimeQuery[string],
+		options.FindOptions,
+		bson.M,
+	]
+	factory property.Factory[primitive.ObjectID]
+}
+
+func NewMongoPropertyRepository(
+	log log.Logger,
+	property database.FinderInserterUpdaterRemover[bson.M, bson.M, property.Property],
+	factory property.Factory[primitive.ObjectID],
+) *PropertyRepositoryMongoImpl {
+	return &PropertyRepositoryMongoImpl{
+		log:         log,
+		property:    property,
+		queryHelper: database.NewMongoQueryHelper(),
+		factory:     factory,
+	}
+}
+
+func (p *PropertyRepositoryMongoImpl) New(
+	ctx context.Context,
+	server string,
+	propertyParams property.NewPropertyParams,
+) (*property.Property, error) {
+	p.log.Debug("Creating new property")
+
+	// Create a new property using the factory
+	newProperty, err := p.factory.New(propertyParams)
+	if err != nil {
+		return nil, errors.NewHandlerError(err,
+			translation.SomethingWentWrong,
+			codes.Internal,
+		)
+	}
+
+	// Insert the new property into the database
+	if _, err := p.property.InsertOne(ctx, server, *newProperty); err != nil {
+		return nil, errors.NewHandlerError(err,
+			translation.SomethingWentWrong,
+			codes.Internal,
+		)
+	}
+
+	return newProperty, nil
+}
+
+// Delete implements property.Repository.
+func (p *PropertyRepositoryMongoImpl) Delete(c context.Context, server string, ID string) error {
+	p.log.Debug("Deleting property with ID: %s", ID)
+	count, err := p.property.DeleteOneByID(c, server, ID)
+	if err != nil {
+		return errors.NewHandlerError(err,
+			translation.SomethingWentWrong,
+			codes.Internal,
+		)
+	}
+	if count == 0 {
+		return errors.NewHandlerError(
+			err,
+			translation.InvalidArgument,
+			codes.NotFound,
+		)
+	}
+	return nil
+}
+
+// Get implements property.Repository.
+func (p *PropertyRepositoryMongoImpl) Get(c context.Context, server string, ID string) (*property.Property, error) {
+	// TODO: Implement fetching a property by ID from MongoDB.
+	p.log.Debug("Fetching property with ID: %s", ID)
+	prop, getErr := p.property.FindByID(c, server, ID)
+	if getErr != nil {
+		return nil, errors.NewHandlerError(getErr,
+			translation.SomethingWentWrong,
+			codes.Internal,
+		)
+	}
+	return prop, nil
+}
+
+// Update implements property.Repository.
+func (p *PropertyRepositoryMongoImpl) Update(c context.Context, server string, id string, params property.UpdatePropertyParams) error {
+	p.log.Debug("Updating property with ID: %s", id)
+
+	updateData := bson.M{}
+
+	if params.Available != nil { // if pointer type, or check for a valid condition
+		updateData["Available"] = *params.Available
+	}
+	if !params.AvailableDate.IsZero() {
+		updateData["AvailableDate"] = params.AvailableDate
+	}
+	if params.Description != "" {
+		updateData["Description"] = params.Description
+	}
+	if params.Title != "" {
+		updateData["Title"] = params.Title
+	}
+	if params.Category != nil {
+		updateData["Category"] = params.Category
+	}
+	if params.Address != "" {
+		updateData["Address"] = params.Address
+	}
+	if params.SaleType != 0 {
+		updateData["SaleType"] = params.SaleType
+	}
+
+	if len(updateData) == 0 {
+		return nil // nothing to update
+	}
+	updateFields := bson.M{
+		"$set": updateData,
+	}
+	err := p.property.UpdateOneByID(c, server, id, updateFields)
+	if err != nil {
+		return errors.NewHandlerError(err,
+			translation.SomethingWentWrong,
+			codes.Internal,
+		)
+	}
+	return nil
+
+}
