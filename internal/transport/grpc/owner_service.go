@@ -14,7 +14,7 @@ type MyOwnerService struct {
 	AppService *port.ServiceImpl
 }
 
-func (s *MyOwnerService) Create(ctx context.Context, req *proto.CreateOwnerRequest) (*proto.CreateOwnerResponse, error) {
+func (s *MyOwnerService) CreateOwner(ctx context.Context, req *proto.CreateOwnerRequest) (*proto.CreateOwnerResponse, error) {
 	s.AppService.Log.Debug("Creating new owner")
 	err := s.AppService.CreateOwner(ctx, command.CreateOwnerCommand{
 		OwnerID:   req.Id,
@@ -34,7 +34,7 @@ func (s *MyOwnerService) Create(ctx context.Context, req *proto.CreateOwnerReque
 	}, nil
 }
 
-func (s *MyOwnerService) Read(ctx context.Context, req *proto.ReadOwnerRequest) (*proto.ReadOwnerResponse, error) {
+func (s *MyOwnerService) ReadOwner(ctx context.Context, req *proto.ReadOwnerRequest) (*proto.ReadOwnerResponse, error) {
 	s.AppService.Log.Debug("Reading owner with ID:", req.Id)
 	owner, err := s.AppService.GetOwner(ctx, query.GetOwnerQuery{
 		ID:     req.Id,
@@ -54,7 +54,7 @@ func (s *MyOwnerService) Read(ctx context.Context, req *proto.ReadOwnerRequest) 
 	}, nil
 }
 
-func (s *MyOwnerService) Update(ctx context.Context, req *proto.UpdateOwnerRequest) (*proto.UpdateOwnerResponse, error) {
+func (s *MyOwnerService) UpdateOwner(ctx context.Context, req *proto.UpdateOwnerRequest) (*proto.UpdateOwnerResponse, error) {
 	s.AppService.Log.Debug("Updating owner with ID:", req.Id)
 	err := s.AppService.UpdateOwner(ctx, command.UpdateOwnerCommand{
 		OwnerID:   req.Id,
@@ -74,7 +74,7 @@ func (s *MyOwnerService) Update(ctx context.Context, req *proto.UpdateOwnerReque
 	}, nil
 }
 
-func (s *MyOwnerService) Delete(ctx context.Context, req *proto.DeleteOwnerRequest) (*proto.DeleteOwnerResponse, error) {
+func (s *MyOwnerService) DeleteOwner(ctx context.Context, req *proto.DeleteOwnerRequest) (*proto.DeleteOwnerResponse, error) {
 	s.AppService.Log.Debug("Deleting owner with ID:", req.Id)
 	err := s.AppService.DeleteOwner(ctx, command.DeleteOwnerCommand{
 		OwnerID: req.Id,
@@ -89,9 +89,4 @@ func (s *MyOwnerService) Delete(ctx context.Context, req *proto.DeleteOwnerReque
 	return &proto.DeleteOwnerResponse{
 		Id: req.Id,
 	}, nil
-}
-
-func (s *MyOwnerService) ReadOwner(ctx context.Context, req *proto.ReadOwnerRequest) (*proto.ReadOwnerResponse, error) {
-	// Delegate ReadOwner to the existing Read implementation
-	return s.Read(ctx, req)
 }

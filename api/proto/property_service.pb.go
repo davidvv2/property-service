@@ -598,12 +598,8 @@ const file_property_service_proto_rawDesc = "" +
 	"\x15DeletePropertyRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"(\n" +
 	"\x16DeletePropertyResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xca\x06\n" +
-	"\x0fPropertyService\x12U\n" +
-	"\x06Create\x12$.mygrpcservice.CreatePropertyRequest\x1a%.mygrpcservice.CreatePropertyResponse\x12O\n" +
-	"\x04Read\x12\".mygrpcservice.ReadPropertyRequest\x1a#.mygrpcservice.ReadPropertyResponse\x12U\n" +
-	"\x06Update\x12$.mygrpcservice.UpdatePropertyRequest\x1a%.mygrpcservice.UpdatePropertyResponse\x12U\n" +
-	"\x06Delete\x12$.mygrpcservice.DeletePropertyRequest\x1a%.mygrpcservice.DeletePropertyResponse\x12r\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xf4\x03\n" +
+	"\x0fPropertyService\x12r\n" +
 	"\fReadProperty\x12\".mygrpcservice.ReadPropertyRequest\x1a#.mygrpcservice.ReadPropertyResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/v1/property/{id}\x12v\n" +
 	"\x0eCreateProperty\x12$.mygrpcservice.CreatePropertyRequest\x1a%.mygrpcservice.CreatePropertyResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/property\x12{\n" +
 	"\x0eUpdateProperty\x12$.mygrpcservice.UpdatePropertyRequest\x1a%.mygrpcservice.UpdatePropertyResponse\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*2\x11/v1/property/{id}\x12x\n" +
@@ -635,32 +631,24 @@ var file_property_service_proto_goTypes = []any{
 	(*wrapperspb.BoolValue)(nil),   // 9: google.protobuf.BoolValue
 }
 var file_property_service_proto_depIdxs = []int32{
-	8,  // 0: mygrpcservice.CreatePropertyRequest.available_date:type_name -> google.protobuf.Timestamp
-	9,  // 1: mygrpcservice.ReadPropertyResponse.available:type_name -> google.protobuf.BoolValue
-	8,  // 2: mygrpcservice.ReadPropertyResponse.available_date:type_name -> google.protobuf.Timestamp
-	9,  // 3: mygrpcservice.UpdatePropertyRequest.available:type_name -> google.protobuf.BoolValue
-	8,  // 4: mygrpcservice.UpdatePropertyRequest.available_date:type_name -> google.protobuf.Timestamp
-	0,  // 5: mygrpcservice.PropertyService.Create:input_type -> mygrpcservice.CreatePropertyRequest
-	2,  // 6: mygrpcservice.PropertyService.Read:input_type -> mygrpcservice.ReadPropertyRequest
-	4,  // 7: mygrpcservice.PropertyService.Update:input_type -> mygrpcservice.UpdatePropertyRequest
-	6,  // 8: mygrpcservice.PropertyService.Delete:input_type -> mygrpcservice.DeletePropertyRequest
-	2,  // 9: mygrpcservice.PropertyService.ReadProperty:input_type -> mygrpcservice.ReadPropertyRequest
-	0,  // 10: mygrpcservice.PropertyService.CreateProperty:input_type -> mygrpcservice.CreatePropertyRequest
-	4,  // 11: mygrpcservice.PropertyService.UpdateProperty:input_type -> mygrpcservice.UpdatePropertyRequest
-	6,  // 12: mygrpcservice.PropertyService.DeleteProperty:input_type -> mygrpcservice.DeletePropertyRequest
-	1,  // 13: mygrpcservice.PropertyService.Create:output_type -> mygrpcservice.CreatePropertyResponse
-	3,  // 14: mygrpcservice.PropertyService.Read:output_type -> mygrpcservice.ReadPropertyResponse
-	5,  // 15: mygrpcservice.PropertyService.Update:output_type -> mygrpcservice.UpdatePropertyResponse
-	7,  // 16: mygrpcservice.PropertyService.Delete:output_type -> mygrpcservice.DeletePropertyResponse
-	3,  // 17: mygrpcservice.PropertyService.ReadProperty:output_type -> mygrpcservice.ReadPropertyResponse
-	1,  // 18: mygrpcservice.PropertyService.CreateProperty:output_type -> mygrpcservice.CreatePropertyResponse
-	5,  // 19: mygrpcservice.PropertyService.UpdateProperty:output_type -> mygrpcservice.UpdatePropertyResponse
-	7,  // 20: mygrpcservice.PropertyService.DeleteProperty:output_type -> mygrpcservice.DeletePropertyResponse
-	13, // [13:21] is the sub-list for method output_type
-	5,  // [5:13] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	8, // 0: mygrpcservice.CreatePropertyRequest.available_date:type_name -> google.protobuf.Timestamp
+	9, // 1: mygrpcservice.ReadPropertyResponse.available:type_name -> google.protobuf.BoolValue
+	8, // 2: mygrpcservice.ReadPropertyResponse.available_date:type_name -> google.protobuf.Timestamp
+	9, // 3: mygrpcservice.UpdatePropertyRequest.available:type_name -> google.protobuf.BoolValue
+	8, // 4: mygrpcservice.UpdatePropertyRequest.available_date:type_name -> google.protobuf.Timestamp
+	2, // 5: mygrpcservice.PropertyService.ReadProperty:input_type -> mygrpcservice.ReadPropertyRequest
+	0, // 6: mygrpcservice.PropertyService.CreateProperty:input_type -> mygrpcservice.CreatePropertyRequest
+	4, // 7: mygrpcservice.PropertyService.UpdateProperty:input_type -> mygrpcservice.UpdatePropertyRequest
+	6, // 8: mygrpcservice.PropertyService.DeleteProperty:input_type -> mygrpcservice.DeletePropertyRequest
+	3, // 9: mygrpcservice.PropertyService.ReadProperty:output_type -> mygrpcservice.ReadPropertyResponse
+	1, // 10: mygrpcservice.PropertyService.CreateProperty:output_type -> mygrpcservice.CreatePropertyResponse
+	5, // 11: mygrpcservice.PropertyService.UpdateProperty:output_type -> mygrpcservice.UpdatePropertyResponse
+	7, // 12: mygrpcservice.PropertyService.DeleteProperty:output_type -> mygrpcservice.DeletePropertyResponse
+	9, // [9:13] is the sub-list for method output_type
+	5, // [5:9] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_property_service_proto_init() }

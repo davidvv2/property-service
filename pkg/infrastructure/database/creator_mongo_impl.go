@@ -1,6 +1,3 @@
-//go:build migration
-// +build migration
-
 package database
 
 import (

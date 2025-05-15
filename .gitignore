@@ -16,3 +16,5 @@ go.work.sum
 
 # third-party dependencies
 third_party/
+
+.yaml

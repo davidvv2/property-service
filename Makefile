@@ -42,3 +42,13 @@ delete:
 
 start_server:
 	kubectl port-forward deployment/property-service-gateway 8888:8080
+
+gen_proto:
+	@mkdir -p ./api/proto/gen
+	@for f in $(shell find ./api/proto -maxdepth 1 -name '*.proto'); do \
+		echo "Generating $$f"; \
+		protoc -I=./api/proto -I=./api/proto/third_party/googleapis \
+			--go_out=paths=source_relative:./api/proto/gen \
+			--go-grpc_out=paths=source_relative:./api/proto/gen \
+			--grpc-gateway_out=logtostderr=true,paths=source_relative:./api/proto/gen $$f; \
+	done

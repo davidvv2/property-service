@@ -68,11 +68,6 @@ message DeletePropertyResponse {
 
 // DomainService defines a set of CRUD operations.
 service PropertyService {
-    rpc Create(CreatePropertyRequest) returns (CreatePropertyResponse);
-    rpc Read(ReadPropertyRequest) returns (ReadPropertyResponse);
-    rpc Update(UpdatePropertyRequest) returns (UpdatePropertyResponse);
-    rpc Delete(DeletePropertyRequest) returns (DeletePropertyResponse);
-
     rpc ReadProperty(ReadPropertyRequest) returns (ReadPropertyResponse) {
         option (google.api.http) = {
             get: "/v1/property/{id}"

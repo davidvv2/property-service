@@ -51,11 +51,6 @@ message DeleteOwnerResponse {
 
 // DomainService defines a set of CRUD operations.
 service OwnerService {
-    rpc Create(CreateOwnerRequest) returns (CreateOwnerResponse);
-    rpc Read(ReadOwnerRequest) returns (ReadOwnerResponse);
-    rpc Update(UpdateOwnerRequest) returns (UpdateOwnerResponse);
-    rpc Delete(DeleteOwnerRequest) returns (DeleteOwnerResponse);
-
     rpc CreateOwner(CreateOwnerRequest) returns (CreateOwnerResponse) {
         option (google.api.http) = {
             post: "/v1/owner"

@@ -19,10 +19,6 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PropertyService_Create_FullMethodName         = "/mygrpcservice.PropertyService/Create"
-	PropertyService_Read_FullMethodName           = "/mygrpcservice.PropertyService/Read"
-	PropertyService_Update_FullMethodName         = "/mygrpcservice.PropertyService/Update"
-	PropertyService_Delete_FullMethodName         = "/mygrpcservice.PropertyService/Delete"
 	PropertyService_ReadProperty_FullMethodName   = "/mygrpcservice.PropertyService/ReadProperty"
 	PropertyService_CreateProperty_FullMethodName = "/mygrpcservice.PropertyService/CreateProperty"
 	PropertyService_UpdateProperty_FullMethodName = "/mygrpcservice.PropertyService/UpdateProperty"
@@ -35,10 +31,6 @@ const (
 //
 // DomainService defines a set of CRUD operations.
 type PropertyServiceClient interface {
-	Create(ctx context.Context, in *CreatePropertyRequest, opts ...grpc.CallOption) (*CreatePropertyResponse, error)
-	Read(ctx context.Context, in *ReadPropertyRequest, opts ...grpc.CallOption) (*ReadPropertyResponse, error)
-	Update(ctx context.Context, in *UpdatePropertyRequest, opts ...grpc.CallOption) (*UpdatePropertyResponse, error)
-	Delete(ctx context.Context, in *DeletePropertyRequest, opts ...grpc.CallOption) (*DeletePropertyResponse, error)
 	ReadProperty(ctx context.Context, in *ReadPropertyRequest, opts ...grpc.CallOption) (*ReadPropertyResponse, error)
 	CreateProperty(ctx context.Context, in *CreatePropertyRequest, opts ...grpc.CallOption) (*CreatePropertyResponse, error)
 	UpdateProperty(ctx context.Context, in *UpdatePropertyRequest, opts ...grpc.CallOption) (*UpdatePropertyResponse, error)
@@ -51,46 +43,6 @@ type propertyServiceClient struct {
 
 func NewPropertyServiceClient(cc grpc.ClientConnInterface) PropertyServiceClient {
 	return &propertyServiceClient{cc}
-}
-
-func (c *propertyServiceClient) Create(ctx context.Context, in *CreatePropertyRequest, opts ...grpc.CallOption) (*CreatePropertyResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreatePropertyResponse)
-	err := c.cc.Invoke(ctx, PropertyService_Create_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *propertyServiceClient) Read(ctx context.Context, in *ReadPropertyRequest, opts ...grpc.CallOption) (*ReadPropertyResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ReadPropertyResponse)
-	err := c.cc.Invoke(ctx, PropertyService_Read_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *propertyServiceClient) Update(ctx context.Context, in *UpdatePropertyRequest, opts ...grpc.CallOption) (*UpdatePropertyResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdatePropertyResponse)
-	err := c.cc.Invoke(ctx, PropertyService_Update_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *propertyServiceClient) Delete(ctx context.Context, in *DeletePropertyRequest, opts ...grpc.CallOption) (*DeletePropertyResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeletePropertyResponse)
-	err := c.cc.Invoke(ctx, PropertyService_Delete_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *propertyServiceClient) ReadProperty(ctx context.Context, in *ReadPropertyRequest, opts ...grpc.CallOption) (*ReadPropertyResponse, error) {
@@ -139,10 +91,6 @@ func (c *propertyServiceClient) DeleteProperty(ctx context.Context, in *DeletePr
 //
 // DomainService defines a set of CRUD operations.
 type PropertyServiceServer interface {
-	Create(context.Context, *CreatePropertyRequest) (*CreatePropertyResponse, error)
-	Read(context.Context, *ReadPropertyRequest) (*ReadPropertyResponse, error)
-	Update(context.Context, *UpdatePropertyRequest) (*UpdatePropertyResponse, error)
-	Delete(context.Context, *DeletePropertyRequest) (*DeletePropertyResponse, error)
 	ReadProperty(context.Context, *ReadPropertyRequest) (*ReadPropertyResponse, error)
 	CreateProperty(context.Context, *CreatePropertyRequest) (*CreatePropertyResponse, error)
 	UpdateProperty(context.Context, *UpdatePropertyRequest) (*UpdatePropertyResponse, error)
@@ -157,18 +105,6 @@ type PropertyServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPropertyServiceServer struct{}
 
-func (UnimplementedPropertyServiceServer) Create(context.Context, *CreatePropertyRequest) (*CreatePropertyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
-}
-func (UnimplementedPropertyServiceServer) Read(context.Context, *ReadPropertyRequest) (*ReadPropertyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
-}
-func (UnimplementedPropertyServiceServer) Update(context.Context, *UpdatePropertyRequest) (*UpdatePropertyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
-}
-func (UnimplementedPropertyServiceServer) Delete(context.Context, *DeletePropertyRequest) (*DeletePropertyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
-}
 func (UnimplementedPropertyServiceServer) ReadProperty(context.Context, *ReadPropertyRequest) (*ReadPropertyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadProperty not implemented")
 }
@@ -200,78 +136,6 @@ func RegisterPropertyServiceServer(s grpc.ServiceRegistrar, srv PropertyServiceS
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&PropertyService_ServiceDesc, srv)
-}
-
-func _PropertyService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreatePropertyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PropertyServiceServer).Create(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PropertyService_Create_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PropertyServiceServer).Create(ctx, req.(*CreatePropertyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PropertyService_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReadPropertyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PropertyServiceServer).Read(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PropertyService_Read_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PropertyServiceServer).Read(ctx, req.(*ReadPropertyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PropertyService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdatePropertyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PropertyServiceServer).Update(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PropertyService_Update_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PropertyServiceServer).Update(ctx, req.(*UpdatePropertyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PropertyService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeletePropertyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PropertyServiceServer).Delete(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PropertyService_Delete_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PropertyServiceServer).Delete(ctx, req.(*DeletePropertyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _PropertyService_ReadProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -353,22 +217,6 @@ var PropertyService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "mygrpcservice.PropertyService",
 	HandlerType: (*PropertyServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Create",
-			Handler:    _PropertyService_Create_Handler,
-		},
-		{
-			MethodName: "Read",
-			Handler:    _PropertyService_Read_Handler,
-		},
-		{
-			MethodName: "Update",
-			Handler:    _PropertyService_Update_Handler,
-		},
-		{
-			MethodName: "Delete",
-			Handler:    _PropertyService_Delete_Handler,
-		},
 		{
 			MethodName: "ReadProperty",
 			Handler:    _PropertyService_ReadProperty_Handler,
