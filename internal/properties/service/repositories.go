@@ -42,6 +42,7 @@ func createRepositories(
 		l,
 		prop.FinderInsterterUpdaterRemover,
 		factory.Property,
+		prop.Aggregator,
 	)
 
 	owner := createOwner(

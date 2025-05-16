@@ -28,7 +28,7 @@ func NewMongoIterator[DomainModel, DatabaseModel any](
 
 func (imi *IteratorMongoImpl[DomainModel, DatabaseModel]) GetAll(c context.Context) (*[]DomainModel, error) {
 	var result []DatabaseModel
-	allErr := imi.cursor.All(c, result)
+	allErr := imi.cursor.All(c, &result)
 	if allErr != nil {
 		return nil, errors.NewInternalError(allErr)
 	}

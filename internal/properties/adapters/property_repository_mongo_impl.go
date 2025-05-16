@@ -12,6 +12,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -32,19 +33,24 @@ type PropertyRepositoryMongoImpl struct {
 		options.FindOptions,
 		bson.M,
 	]
-	factory property.Factory[primitive.ObjectID]
+	paginationHelper database.PaginationHelper
+	factory          property.Factory[primitive.ObjectID]
+	aggregator       database.Grouper[mongo.Pipeline, property.Property]
 }
 
 func NewMongoPropertyRepository(
 	log log.Logger,
 	property database.FinderInserterUpdaterRemover[bson.M, bson.M, property.Property],
 	factory property.Factory[primitive.ObjectID],
+	aggregator database.Grouper[mongo.Pipeline, property.Property],
 ) *PropertyRepositoryMongoImpl {
 	return &PropertyRepositoryMongoImpl{
-		log:         log,
-		property:    property,
-		queryHelper: database.NewMongoQueryHelper(),
-		factory:     factory,
+		log:              log,
+		property:         property,
+		queryHelper:      database.NewMongoQueryHelper(),
+		paginationHelper: &database.PaginationHelperMongoImpl{},
+		factory:          factory,
+		aggregator:       aggregator,
 	}
 }
 
@@ -110,7 +116,12 @@ func (p *PropertyRepositoryMongoImpl) Get(c context.Context, server string, ID s
 }
 
 // Update implements property.Repository.
-func (p *PropertyRepositoryMongoImpl) Update(c context.Context, server string, id string, params property.UpdatePropertyParams) error {
+func (p *PropertyRepositoryMongoImpl) Update(
+	c context.Context,
+	server string,
+	id string,
+	params property.UpdatePropertyParams,
+) error {
 	p.log.Debug("Updating property with ID: %s", id)
 
 	updateData := bson.M{}
@@ -127,7 +138,7 @@ func (p *PropertyRepositoryMongoImpl) Update(c context.Context, server string, i
 	if params.Title != "" {
 		updateData["Title"] = params.Title
 	}
-	if params.Category != nil {
+	if params.Category != "" {
 		updateData["Category"] = params.Category
 	}
 	if params.Address != "" {
@@ -152,4 +163,61 @@ func (p *PropertyRepositoryMongoImpl) Update(c context.Context, server string, i
 	}
 	return nil
 
+}
+
+// ListByCategory implements property.Repository.
+func (p *PropertyRepositoryMongoImpl) ListByCategory(
+	c context.Context,
+	server string,
+	category string,
+	sort uint8,
+	limit uint16,
+	paginationToken string,
+	search uint8,
+) ([]property.Property, error) {
+	sortSpec := bson.D{
+		{Key: "Title", Value: sort},
+	}
+	filter, err := p.paginationHelper.TextPaginationHelper(
+		"default",
+		"Category",
+		category,
+		sortSpec,
+		search,
+		paginationToken,
+	)
+	if err != nil {
+		return nil, errors.NewHandlerError(err,
+			translation.SomethingWentWrong,
+			codes.Internal,
+		)
+	}
+
+	res, aggErr := p.aggregator.Aggregate(
+		c,
+		server,
+		mongo.Pipeline{
+			filter,
+			bson.D{{Key: "$limit", Value: limit}},
+		},
+	)
+	if aggErr != nil {
+		p.log.Debug("Error in aggregation: %v", aggErr)
+		return nil, errors.NewHandlerError(aggErr,
+			translation.SomethingWentWrong,
+			codes.Internal,
+		)
+	}
+
+	finalRes, getErr := res.GetAll(c)
+
+	if getErr != nil {
+		p.log.Debug("Error in getting all results: %v", getErr)
+		return nil, errors.NewHandlerError(
+			getErr,
+			translation.SomethingWentWrong,
+			codes.Internal,
+		)
+	}
+	return *finalRes, nil
 }

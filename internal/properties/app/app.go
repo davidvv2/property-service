@@ -33,6 +33,7 @@ type Commands struct {
 
 // Queries is a struct that holds the application's query handlers.
 type Queries struct {
-	GetProperty query.GetPropertyHandler
-	GetOwner    query.GetOwnerHandler
+	GetProperty              query.GetPropertyHandler
+	GetOwner                 query.GetOwnerHandler
+	ListPropertiesByCategory query.ListPropertiesByCategoriesHandler
 }

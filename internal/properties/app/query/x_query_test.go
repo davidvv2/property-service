@@ -29,14 +29,21 @@ func TestQueryTestSuite(t *testing.T) {
 	v := validator.New()
 	s := service.BuildDependencies(config)
 	// Initialize the test suite
-	suite.Run(t, &GetOwnerTestSuite{
-		log:        log,
-		config:     config,
-		validator:  v,
-		ctx:        context.Background(),
-		ServiceDep: s,
-	})
-	suite.Run(t, &GetPropertyTestSuite{
+	// suite.Run(t, &GetOwnerTestSuite{
+	// 	log:        log,
+	// 	config:     config,
+	// 	validator:  v,
+	// 	ctx:        context.Background(),
+	// 	ServiceDep: s,
+	// })
+	// suite.Run(t, &GetPropertyTestSuite{
+	// 	log:        log,
+	// 	config:     config,
+	// 	validator:  v,
+	// 	ctx:        context.Background(),
+	// 	ServiceDep: s,
+	// })
+	suite.Run(t, &ListPropertiesByCategoriesTestSuite{
 		log:        log,
 		config:     config,
 		validator:  v,

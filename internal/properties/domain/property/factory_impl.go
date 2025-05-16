@@ -70,7 +70,7 @@ func (fi FactoryImpl[databaseID]) validate(la *Property) error {
 type NewPropertyParams struct {
 	PropertyID    string    `validate:"required"`
 	OwnerID       string    `validate:"required"`
-	Category      []string  `validate:"required"`
+	Category      string    `validate:"required"`
 	Description   string    `validate:"required"`
 	Title         string    `validate:"required"`
 	Available     bool      `validate:"required"`

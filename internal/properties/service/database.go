@@ -34,6 +34,9 @@ type Property struct {
 	FinderInsterterUpdaterRemover database.FinderInserterUpdaterRemover[
 		bson.M, bson.M, property.Property,
 	]
+	Aggregator database.Grouper[
+		mongo.Pipeline, property.Property,
+	]
 }
 
 func createProperty(
@@ -65,12 +68,18 @@ func createProperty(
 		propFinder, propInserter, propUpdater, propRemover,
 	)
 
+	// Aggregator
+	propAggregator := database.NewMongoGrouper[property.Property, property.Model[primitive.ObjectID]](
+		l, factory.Property, connector, _PROPERTY,
+	)
+
 	return Property{
 		finder:                        propFinder,
 		updater:                       propUpdater,
 		FinderUpdater:                 propFinderUpdater,
 		Inserter:                      propInserter,
 		FinderInsterterUpdaterRemover: propFinderInserterUpdaterRemover,
+		Aggregator:                    propAggregator,
 	}
 }
 

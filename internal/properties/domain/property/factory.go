@@ -34,7 +34,7 @@ type UpdatePropertyParams struct {
 	AvailableDate time.Time
 	Description   string
 	Title         string
-	Category      []string
+	Category      string
 	Address       string
 	SaleType      uint8
 }

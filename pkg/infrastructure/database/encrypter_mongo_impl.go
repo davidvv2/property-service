@@ -83,15 +83,13 @@ func (emi *EncrypterMongoImpl[EncryptData, EncryptedData]) DeleteDEK(
 }
 
 // EncryptDeterministically: will encrypt the value provided deterministically meaning the same each time.
-// This is useful for when you need to query by the data.
 func (emi *EncrypterMongoImpl[EncryptData, EncryptedData]) Deterministically(
 	c context.Context, data EncryptData, keyAltNames string,
 ) (EncryptedData, error) {
 	return emi.encrypt(c, data, keyAltNames, deterministic)
 }
 
-// EncryptRandomly : Will encrypt the data randomly each time, this means you can not search for this data. This
-// is useful for data that has low cardinality, please use this for fields that do not need to be searched.
+// EncryptRandomly : Will encrypt the data randomly each time, this means you can not search for this data.
 func (emi *EncrypterMongoImpl[EncryptData, EncryptedData]) Randomly(
 	c context.Context, data EncryptData, keyAltNames string,
 ) (EncryptedData, error) {
@@ -102,7 +100,6 @@ func (emi *EncrypterMongoImpl[EncryptData, EncryptedData]) encrypt(
 	c context.Context, data EncryptData, keyAltNames string, encryptAlgorithm string,
 ) (EncryptedData, error) {
 	// Marshal the document into a bson value and data pair. Note this is uses reflection obviously.
-	// We should improve upon this in the future but it will do for now.
 	nameRawValueType, nameRawValueData, err := bson.MarshalValue(data)
 	if err != nil {
 		return EncryptedData{}, err

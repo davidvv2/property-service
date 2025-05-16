@@ -15,7 +15,8 @@ import (
 
 func main() {
 	// Define command-line flags
-	grpcServerEndpoint := flag.String("grpc-server-endpoint", "property-service.default.svc.cluster.local:50051", "gRPC server endpoint")
+	// grpcServerEndpoint := flag.String("grpc-server-endpoint", "property-service.default.svc.cluster.local:50051", "gRPC server endpoint")
+	grpcServerEndpoint := flag.String("grpc-server-endpoint", "localhost:50051", "gRPC server endpoint")
 	flag.Parse()
 
 	// Create a context that is canceled when the process is terminated.

@@ -24,7 +24,7 @@ type GetPropertyQuery struct {
 // The handler retrieves the property model from the database and returns it to the caller.
 type GetPropertyHandler decorator.QueryHandler[GetPropertyQuery, *property.Property]
 
-type getPropertyHandlerImpl struct {
+type GetPropertyHandlerImpl struct {
 	repository property.Repository
 	validator  *validator.Validate
 }
@@ -39,7 +39,7 @@ func NewGetPropertyHandler(
 		panic("nil property repository")
 	}
 	return decorator.ApplyQueryDecorators(
-		getPropertyHandlerImpl{
+		GetPropertyHandlerImpl{
 			repository: propRepo,
 			validator:  validator,
 		},
@@ -50,7 +50,7 @@ func NewGetPropertyHandler(
 
 // Handler method takes a context and returns a flat buffer response
 // and an error.
-func (guh getPropertyHandlerImpl) Handle(c context.Context, cmd GetPropertyQuery,
+func (guh GetPropertyHandlerImpl) Handle(c context.Context, cmd GetPropertyQuery,
 ) (*property.Property, error) {
 	property, err := guh.repository.Get(c, cmd.Server, cmd.ID)
 	if err != nil {

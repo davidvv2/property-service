@@ -19,7 +19,7 @@ type MyPropertyService struct {
 	AppService *port.ServiceImpl
 }
 
-func (s *MyPropertyService) Create(ctx context.Context, req *proto.CreatePropertyRequest) (*proto.CreatePropertyResponse, error) {
+func (s *MyPropertyService) CreateProperty(ctx context.Context, req *proto.CreatePropertyRequest) (*proto.CreatePropertyResponse, error) {
 	s.AppService.Log.Debug("Creating new property")
 	newID := database.NewStringID()
 	err := s.AppService.CreateProperty(ctx, command.CreatePropertyCommand{
@@ -28,7 +28,7 @@ func (s *MyPropertyService) Create(ctx context.Context, req *proto.CreatePropert
 		Address:       req.Address,
 		Description:   req.Description,
 		Title:         req.Title,
-		Category:      req.Category,
+		Category:      req.Category[0],
 		Available:     req.Available,
 		AvailableDate: req.AvailableDate.AsTime(),
 		SaleType:      uint8(req.SaleType),
@@ -45,7 +45,7 @@ func (s *MyPropertyService) Create(ctx context.Context, req *proto.CreatePropert
 	}, nil
 }
 
-func (s *MyPropertyService) Read(ctx context.Context, req *proto.ReadPropertyRequest) (*proto.ReadPropertyResponse, error) {
+func (s *MyPropertyService) ReadProperty(ctx context.Context, req *proto.ReadPropertyRequest) (*proto.ReadPropertyResponse, error) {
 	s.AppService.Log.Debug("Reading property with ID:", req.Id)
 	property, err := s.AppService.GetProperty(ctx, query.GetPropertyQuery{
 		ID:     req.Id,
@@ -66,18 +66,18 @@ func (s *MyPropertyService) Read(ctx context.Context, req *proto.ReadPropertyReq
 		AvailableDate: timestamppb.New(property.AvailableDate()),
 		Available:     wrapperspb.Bool(property.Available()),
 		SaleType:      uint32(property.SaleType()),
-		Category:      property.Category(),
+		Category:      []string{property.Category()},
 	}, nil
 }
 
-func (s *MyPropertyService) Update(ctx context.Context, req *proto.UpdatePropertyRequest) (*proto.UpdatePropertyResponse, error) {
+func (s *MyPropertyService) UpdateProperty(ctx context.Context, req *proto.UpdatePropertyRequest) (*proto.UpdatePropertyResponse, error) {
 	s.AppService.Log.Debug("Updating property with ID:", req.Id)
 	err := s.AppService.UpdateProperty(ctx, command.UpdatePropertyCommand{
 		PropertyID:  req.Id,
 		Address:     req.Address,
 		Description: req.Description,
 		Title:       req.Title,
-		Category:    req.Category,
+		Category:    req.Category[0],
 		Available: func() *bool {
 			if req.Available != nil {
 				b := req.Available.Value
@@ -100,7 +100,7 @@ func (s *MyPropertyService) Update(ctx context.Context, req *proto.UpdatePropert
 	}, nil
 }
 
-func (s *MyPropertyService) Delete(ctx context.Context, req *proto.DeletePropertyRequest) (*proto.DeletePropertyResponse, error) {
+func (s *MyPropertyService) DeleteProperty(ctx context.Context, req *proto.DeletePropertyRequest) (*proto.DeletePropertyResponse, error) {
 	s.AppService.Log.Debug("Deleting property with ID:", req.Id)
 	err := s.AppService.DeleteProperty(ctx, command.DeletePropertyCommand{
 		PropertyID: req.Id,

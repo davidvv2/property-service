@@ -8,7 +8,7 @@ func (p *Property) ID() string {
 func (p *Property) OwnerID() string {
 	return p.ownerID
 }
-func (p *Property) Category() []string {
+func (p *Property) Category() string {
 	return p.category
 }
 func (p *Property) Description() string {

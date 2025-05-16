@@ -14,7 +14,7 @@ const (
 type Model[ID any] struct {
 	ID            ID            `bson:"_id" validate:"required,len=24,hexadecimal"`
 	OwnerID       ID            `bson:"OwnerID" validate:"required,len=24,hexadecimal"`
-	Category      []string      `bson:"Category" validate:"required"`
+	Category      string        `bson:"Category" validate:"required"`
 	Description   string        `bson:"Description" validate:"required"`
 	Title         string        `bson:"Title" validate:"required"`
 	Metadata      MetadataModel `bson:"Metadata" validate:"required"`
@@ -63,7 +63,7 @@ func MapModelToProperty[Old any](
 type Property struct {
 	id            string    `validate:"required"`
 	ownerID       string    `validate:"required"`
-	category      []string  `validate:"required"`
+	category      string    `validate:"required"`
 	description   string    `validate:"required"`
 	title         string    `validate:"required"`
 	metadata      Metadata  `validate:"required"`

@@ -17,5 +17,10 @@ func (d Dependencies) createQueries() app.Queries {
 			d.L,
 			d.V,
 		),
+		ListPropertiesByCategory: query.NewListPropertiesByCategoriesHandler(
+			d.Repo.PropertyRepository,
+			d.L,
+			d.V,
+		),
 	}
 }

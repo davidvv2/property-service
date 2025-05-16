@@ -44,7 +44,7 @@ func (s *NewPropertyTestSuite) SetupTest() {
 		Address:       "123 Main St",
 		Description:   "A beautiful property",
 		Title:         "Beautiful Property",
-		Category:      []string{"House", "Apartment"},
+		Category:      "House",
 		Available:     true,
 		AvailableDate: time.Now(),
 		SaleType:      1,

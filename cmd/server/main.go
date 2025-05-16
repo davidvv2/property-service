@@ -4,21 +4,21 @@ import (
 	"net"
 
 	"property-service/api/proto"
-	port "property-service/internal/properties/ports" // port package
+	port "property-service/internal/properties/ports"
 
-	// gRPC adapter/service package
 	transport "property-service/internal/transport/grpc"
 	"property-service/pkg/configs"
-	"property-service/pkg/infrastructure/log" // your logger implementation
+	"property-service/pkg/infrastructure/log"
 
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	// // Load environment variables.
-	// if err := godotenv.Load("dev.env"); err != nil {
-	//     panic("Error loading .env file: " + err.Error())
-	// }
+	// Load environment variables.
+	if err := godotenv.Load("dev.env"); err != nil {
+		panic("Error loading .env file: " + err.Error())
+	}
 	// Load configs and logger.
 	cfg := configs.New() // initialize your config
 	logger := log.NewZapImpl(&cfg.Backend)
@@ -32,7 +32,6 @@ func main() {
 	}
 	// Initialize your gRPC service, injecting the port service.
 	propService := &transport.MyPropertyService{
-		// (Assuming you've added a field e.g. "App" to MyPropertyService)
 		AppService: portService,
 	}
 

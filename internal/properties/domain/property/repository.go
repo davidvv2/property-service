@@ -14,4 +14,14 @@ type Repository interface {
 	Get(c context.Context, server string, ID string) (*Property, error)
 	// Update: updates a property.
 	Update(c context.Context, server string, id string, params UpdatePropertyParams) error
+
+	ListByCategory(
+		c context.Context,
+		server string,
+		category string,
+		sort uint8,
+		limit uint16,
+		paginationToken string,
+		search uint8,
+	) ([]Property, error)
 }
