@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PropertyService_ReadProperty_FullMethodName   = "/mygrpcservice.PropertyService/ReadProperty"
-	PropertyService_CreateProperty_FullMethodName = "/mygrpcservice.PropertyService/CreateProperty"
-	PropertyService_UpdateProperty_FullMethodName = "/mygrpcservice.PropertyService/UpdateProperty"
-	PropertyService_DeleteProperty_FullMethodName = "/mygrpcservice.PropertyService/DeleteProperty"
+	PropertyService_ReadProperty_FullMethodName           = "/mygrpcservice.PropertyService/ReadProperty"
+	PropertyService_CreateProperty_FullMethodName         = "/mygrpcservice.PropertyService/CreateProperty"
+	PropertyService_UpdateProperty_FullMethodName         = "/mygrpcservice.PropertyService/UpdateProperty"
+	PropertyService_DeleteProperty_FullMethodName         = "/mygrpcservice.PropertyService/DeleteProperty"
+	PropertyService_ListPropertyByCategory_FullMethodName = "/mygrpcservice.PropertyService/ListPropertyByCategory"
 )
 
 // PropertyServiceClient is the client API for PropertyService service.
@@ -35,6 +36,7 @@ type PropertyServiceClient interface {
 	CreateProperty(ctx context.Context, in *CreatePropertyRequest, opts ...grpc.CallOption) (*CreatePropertyResponse, error)
 	UpdateProperty(ctx context.Context, in *UpdatePropertyRequest, opts ...grpc.CallOption) (*UpdatePropertyResponse, error)
 	DeleteProperty(ctx context.Context, in *DeletePropertyRequest, opts ...grpc.CallOption) (*DeletePropertyResponse, error)
+	ListPropertyByCategory(ctx context.Context, in *PropertyListByCategoryRequest, opts ...grpc.CallOption) (*ListPropertyByCategoryResponse, error)
 }
 
 type propertyServiceClient struct {
@@ -85,6 +87,16 @@ func (c *propertyServiceClient) DeleteProperty(ctx context.Context, in *DeletePr
 	return out, nil
 }
 
+func (c *propertyServiceClient) ListPropertyByCategory(ctx context.Context, in *PropertyListByCategoryRequest, opts ...grpc.CallOption) (*ListPropertyByCategoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListPropertyByCategoryResponse)
+	err := c.cc.Invoke(ctx, PropertyService_ListPropertyByCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PropertyServiceServer is the server API for PropertyService service.
 // All implementations must embed UnimplementedPropertyServiceServer
 // for forward compatibility.
@@ -95,6 +107,7 @@ type PropertyServiceServer interface {
 	CreateProperty(context.Context, *CreatePropertyRequest) (*CreatePropertyResponse, error)
 	UpdateProperty(context.Context, *UpdatePropertyRequest) (*UpdatePropertyResponse, error)
 	DeleteProperty(context.Context, *DeletePropertyRequest) (*DeletePropertyResponse, error)
+	ListPropertyByCategory(context.Context, *PropertyListByCategoryRequest) (*ListPropertyByCategoryResponse, error)
 	mustEmbedUnimplementedPropertyServiceServer()
 }
 
@@ -116,6 +129,9 @@ func (UnimplementedPropertyServiceServer) UpdateProperty(context.Context, *Updat
 }
 func (UnimplementedPropertyServiceServer) DeleteProperty(context.Context, *DeletePropertyRequest) (*DeletePropertyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProperty not implemented")
+}
+func (UnimplementedPropertyServiceServer) ListPropertyByCategory(context.Context, *PropertyListByCategoryRequest) (*ListPropertyByCategoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPropertyByCategory not implemented")
 }
 func (UnimplementedPropertyServiceServer) mustEmbedUnimplementedPropertyServiceServer() {}
 func (UnimplementedPropertyServiceServer) testEmbeddedByValue()                         {}
@@ -210,6 +226,24 @@ func _PropertyService_DeleteProperty_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PropertyService_ListPropertyByCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PropertyListByCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PropertyServiceServer).ListPropertyByCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PropertyService_ListPropertyByCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PropertyServiceServer).ListPropertyByCategory(ctx, req.(*PropertyListByCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PropertyService_ServiceDesc is the grpc.ServiceDesc for PropertyService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -232,6 +266,10 @@ var PropertyService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteProperty",
 			Handler:    _PropertyService_DeleteProperty_Handler,
+		},
+		{
+			MethodName: "ListPropertyByCategory",
+			Handler:    _PropertyService_ListPropertyByCategory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

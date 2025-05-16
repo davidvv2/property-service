@@ -59,6 +59,13 @@ func (s *ServiceImpl) GetProperty(
 	return s.App.Queries.GetProperty.Handle(ctx, params)
 }
 
+func (s *ServiceImpl) ListPropertiesByCategory(
+	ctx context.Context,
+	params query.ListPropertiesByCategoriesQuery,
+) (*query.ListPropertiesByCategoriesResult, error) {
+	return s.App.Queries.ListPropertiesByCategory.Handle(ctx, params)
+}
+
 // Owner CRUD operations
 func (s *ServiceImpl) CreateOwner(
 	ctx context.Context,

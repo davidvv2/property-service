@@ -66,6 +66,33 @@ message DeletePropertyResponse {
     string id = 1;
 }
 
+
+message Property {
+    string id = 1;
+    repeated string category = 2;
+    string description = 3;
+    string ownerID = 4;
+    string title = 5;
+    google.protobuf.BoolValue available = 6;
+    google.protobuf.Timestamp available_date = 7;
+    string address = 8;
+    uint32 sale_type = 9;
+}
+
+
+
+message PropertyListByCategoryRequest {
+    string category = 2;           // The category to filter properties.
+    uint32 sort = 3;               // Sort flag/direction.
+    uint32 search = 4;             // 0 = no token, 1 = searchAfter, 2 = searchBefore.
+    uint32 limit = 5;              // Maximum number of properties to return.
+    string paginationToken = 6;    // Pagination token from previous request (optional).
+}
+
+message ListPropertyByCategoryResponse {
+    repeated Property properties = 1;
+}
+
 // DomainService defines a set of CRUD operations.
 service PropertyService {
     rpc ReadProperty(ReadPropertyRequest) returns (ReadPropertyResponse) {
@@ -88,6 +115,11 @@ service PropertyService {
     rpc DeleteProperty(DeletePropertyRequest) returns (DeletePropertyResponse) {
         option (google.api.http) = {
             delete: "/v1/property/{id}"
+        };
+    }
+    rpc ListPropertyByCategory(PropertyListByCategoryRequest) returns (ListPropertyByCategoryResponse) {
+        option (google.api.http) = {
+            get: "/v1/property"
         };
     }
 }

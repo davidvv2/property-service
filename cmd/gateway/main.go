@@ -39,7 +39,9 @@ func main() {
 	if err := proto.RegisterOwnerServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts); err != nil {
 		log.Fatalf("Failed to register HTTP handler: %v", err)
 	}
-
+	if err := proto.RegisterPropertyServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts); err != nil {
+		log.Fatalf("Failed to register property service HTTP handler: %v", err)
+	}
 	log.Println("Starting grpc-gateway on :8080")
 	if err := http.ListenAndServe("0.0.0.0:8080", mux); err != nil {
 		log.Fatalf("Failed to serve: %v", err)

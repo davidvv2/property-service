@@ -556,6 +556,234 @@ func (x *DeletePropertyResponse) GetId() string {
 	return ""
 }
 
+type Property struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Category      []string               `protobuf:"bytes,2,rep,name=category,proto3" json:"category,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	OwnerID       string                 `protobuf:"bytes,4,opt,name=ownerID,proto3" json:"ownerID,omitempty"`
+	Title         string                 `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
+	Available     *wrapperspb.BoolValue  `protobuf:"bytes,6,opt,name=available,proto3" json:"available,omitempty"`
+	AvailableDate *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=available_date,json=availableDate,proto3" json:"available_date,omitempty"`
+	Address       string                 `protobuf:"bytes,8,opt,name=address,proto3" json:"address,omitempty"`
+	SaleType      uint32                 `protobuf:"varint,9,opt,name=sale_type,json=saleType,proto3" json:"sale_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Property) Reset() {
+	*x = Property{}
+	mi := &file_property_service_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Property) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Property) ProtoMessage() {}
+
+func (x *Property) ProtoReflect() protoreflect.Message {
+	mi := &file_property_service_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Property.ProtoReflect.Descriptor instead.
+func (*Property) Descriptor() ([]byte, []int) {
+	return file_property_service_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *Property) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Property) GetCategory() []string {
+	if x != nil {
+		return x.Category
+	}
+	return nil
+}
+
+func (x *Property) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Property) GetOwnerID() string {
+	if x != nil {
+		return x.OwnerID
+	}
+	return ""
+}
+
+func (x *Property) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Property) GetAvailable() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.Available
+	}
+	return nil
+}
+
+func (x *Property) GetAvailableDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.AvailableDate
+	}
+	return nil
+}
+
+func (x *Property) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *Property) GetSaleType() uint32 {
+	if x != nil {
+		return x.SaleType
+	}
+	return 0
+}
+
+type PropertyListByCategoryRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Category        string                 `protobuf:"bytes,2,opt,name=category,proto3" json:"category,omitempty"`               // The category to filter properties.
+	Sort            uint32                 `protobuf:"varint,3,opt,name=sort,proto3" json:"sort,omitempty"`                      // Sort flag/direction.
+	Search          uint32                 `protobuf:"varint,4,opt,name=search,proto3" json:"search,omitempty"`                  // 0 = no token, 1 = searchAfter, 2 = searchBefore.
+	Limit           uint32                 `protobuf:"varint,5,opt,name=limit,proto3" json:"limit,omitempty"`                    // Maximum number of properties to return.
+	PaginationToken string                 `protobuf:"bytes,6,opt,name=paginationToken,proto3" json:"paginationToken,omitempty"` // Pagination token from previous request (optional).
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *PropertyListByCategoryRequest) Reset() {
+	*x = PropertyListByCategoryRequest{}
+	mi := &file_property_service_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PropertyListByCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PropertyListByCategoryRequest) ProtoMessage() {}
+
+func (x *PropertyListByCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_property_service_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PropertyListByCategoryRequest.ProtoReflect.Descriptor instead.
+func (*PropertyListByCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_property_service_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *PropertyListByCategoryRequest) GetCategory() string {
+	if x != nil {
+		return x.Category
+	}
+	return ""
+}
+
+func (x *PropertyListByCategoryRequest) GetSort() uint32 {
+	if x != nil {
+		return x.Sort
+	}
+	return 0
+}
+
+func (x *PropertyListByCategoryRequest) GetSearch() uint32 {
+	if x != nil {
+		return x.Search
+	}
+	return 0
+}
+
+func (x *PropertyListByCategoryRequest) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *PropertyListByCategoryRequest) GetPaginationToken() string {
+	if x != nil {
+		return x.PaginationToken
+	}
+	return ""
+}
+
+type ListPropertyByCategoryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Properties    []*Property            `protobuf:"bytes,1,rep,name=properties,proto3" json:"properties,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListPropertyByCategoryResponse) Reset() {
+	*x = ListPropertyByCategoryResponse{}
+	mi := &file_property_service_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListPropertyByCategoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListPropertyByCategoryResponse) ProtoMessage() {}
+
+func (x *ListPropertyByCategoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_property_service_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListPropertyByCategoryResponse.ProtoReflect.Descriptor instead.
+func (*ListPropertyByCategoryResponse) Descriptor() ([]byte, []int) {
+	return file_property_service_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ListPropertyByCategoryResponse) GetProperties() []*Property {
+	if x != nil {
+		return x.Properties
+	}
+	return nil
+}
+
 var File_property_service_proto protoreflect.FileDescriptor
 
 const file_property_service_proto_rawDesc = "" +
@@ -598,12 +826,33 @@ const file_property_service_proto_rawDesc = "" +
 	"\x15DeletePropertyRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"(\n" +
 	"\x16DeletePropertyResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xf4\x03\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xbc\x02\n" +
+	"\bProperty\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
+	"\bcategory\x18\x02 \x03(\tR\bcategory\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x18\n" +
+	"\aownerID\x18\x04 \x01(\tR\aownerID\x12\x14\n" +
+	"\x05title\x18\x05 \x01(\tR\x05title\x128\n" +
+	"\tavailable\x18\x06 \x01(\v2\x1a.google.protobuf.BoolValueR\tavailable\x12A\n" +
+	"\x0eavailable_date\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\ravailableDate\x12\x18\n" +
+	"\aaddress\x18\b \x01(\tR\aaddress\x12\x1b\n" +
+	"\tsale_type\x18\t \x01(\rR\bsaleType\"\xa7\x01\n" +
+	"\x1dPropertyListByCategoryRequest\x12\x1a\n" +
+	"\bcategory\x18\x02 \x01(\tR\bcategory\x12\x12\n" +
+	"\x04sort\x18\x03 \x01(\rR\x04sort\x12\x16\n" +
+	"\x06search\x18\x04 \x01(\rR\x06search\x12\x14\n" +
+	"\x05limit\x18\x05 \x01(\rR\x05limit\x12(\n" +
+	"\x0fpaginationToken\x18\x06 \x01(\tR\x0fpaginationToken\"Y\n" +
+	"\x1eListPropertyByCategoryResponse\x127\n" +
+	"\n" +
+	"properties\x18\x01 \x03(\v2\x17.mygrpcservice.PropertyR\n" +
+	"properties2\x82\x05\n" +
 	"\x0fPropertyService\x12r\n" +
 	"\fReadProperty\x12\".mygrpcservice.ReadPropertyRequest\x1a#.mygrpcservice.ReadPropertyResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/v1/property/{id}\x12v\n" +
 	"\x0eCreateProperty\x12$.mygrpcservice.CreatePropertyRequest\x1a%.mygrpcservice.CreatePropertyResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/property\x12{\n" +
 	"\x0eUpdateProperty\x12$.mygrpcservice.UpdatePropertyRequest\x1a%.mygrpcservice.UpdatePropertyResponse\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*2\x11/v1/property/{id}\x12x\n" +
-	"\x0eDeleteProperty\x12$.mygrpcservice.DeletePropertyRequest\x1a%.mygrpcservice.DeletePropertyResponse\"\x19\x82\xd3\xe4\x93\x02\x13*\x11/v1/property/{id}B\"Z property-service/api/proto;protob\x06proto3"
+	"\x0eDeleteProperty\x12$.mygrpcservice.DeletePropertyRequest\x1a%.mygrpcservice.DeletePropertyResponse\"\x19\x82\xd3\xe4\x93\x02\x13*\x11/v1/property/{id}\x12\x8b\x01\n" +
+	"\x16ListPropertyByCategory\x12,.mygrpcservice.PropertyListByCategoryRequest\x1a-.mygrpcservice.ListPropertyByCategoryResponse\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/v1/propertyB\"Z property-service/api/proto;protob\x06proto3"
 
 var (
 	file_property_service_proto_rawDescOnce sync.Once
@@ -617,38 +866,46 @@ func file_property_service_proto_rawDescGZIP() []byte {
 	return file_property_service_proto_rawDescData
 }
 
-var file_property_service_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_property_service_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_property_service_proto_goTypes = []any{
-	(*CreatePropertyRequest)(nil),  // 0: mygrpcservice.CreatePropertyRequest
-	(*CreatePropertyResponse)(nil), // 1: mygrpcservice.CreatePropertyResponse
-	(*ReadPropertyRequest)(nil),    // 2: mygrpcservice.ReadPropertyRequest
-	(*ReadPropertyResponse)(nil),   // 3: mygrpcservice.ReadPropertyResponse
-	(*UpdatePropertyRequest)(nil),  // 4: mygrpcservice.UpdatePropertyRequest
-	(*UpdatePropertyResponse)(nil), // 5: mygrpcservice.UpdatePropertyResponse
-	(*DeletePropertyRequest)(nil),  // 6: mygrpcservice.DeletePropertyRequest
-	(*DeletePropertyResponse)(nil), // 7: mygrpcservice.DeletePropertyResponse
-	(*timestamppb.Timestamp)(nil),  // 8: google.protobuf.Timestamp
-	(*wrapperspb.BoolValue)(nil),   // 9: google.protobuf.BoolValue
+	(*CreatePropertyRequest)(nil),          // 0: mygrpcservice.CreatePropertyRequest
+	(*CreatePropertyResponse)(nil),         // 1: mygrpcservice.CreatePropertyResponse
+	(*ReadPropertyRequest)(nil),            // 2: mygrpcservice.ReadPropertyRequest
+	(*ReadPropertyResponse)(nil),           // 3: mygrpcservice.ReadPropertyResponse
+	(*UpdatePropertyRequest)(nil),          // 4: mygrpcservice.UpdatePropertyRequest
+	(*UpdatePropertyResponse)(nil),         // 5: mygrpcservice.UpdatePropertyResponse
+	(*DeletePropertyRequest)(nil),          // 6: mygrpcservice.DeletePropertyRequest
+	(*DeletePropertyResponse)(nil),         // 7: mygrpcservice.DeletePropertyResponse
+	(*Property)(nil),                       // 8: mygrpcservice.Property
+	(*PropertyListByCategoryRequest)(nil),  // 9: mygrpcservice.PropertyListByCategoryRequest
+	(*ListPropertyByCategoryResponse)(nil), // 10: mygrpcservice.ListPropertyByCategoryResponse
+	(*timestamppb.Timestamp)(nil),          // 11: google.protobuf.Timestamp
+	(*wrapperspb.BoolValue)(nil),           // 12: google.protobuf.BoolValue
 }
 var file_property_service_proto_depIdxs = []int32{
-	8, // 0: mygrpcservice.CreatePropertyRequest.available_date:type_name -> google.protobuf.Timestamp
-	9, // 1: mygrpcservice.ReadPropertyResponse.available:type_name -> google.protobuf.BoolValue
-	8, // 2: mygrpcservice.ReadPropertyResponse.available_date:type_name -> google.protobuf.Timestamp
-	9, // 3: mygrpcservice.UpdatePropertyRequest.available:type_name -> google.protobuf.BoolValue
-	8, // 4: mygrpcservice.UpdatePropertyRequest.available_date:type_name -> google.protobuf.Timestamp
-	2, // 5: mygrpcservice.PropertyService.ReadProperty:input_type -> mygrpcservice.ReadPropertyRequest
-	0, // 6: mygrpcservice.PropertyService.CreateProperty:input_type -> mygrpcservice.CreatePropertyRequest
-	4, // 7: mygrpcservice.PropertyService.UpdateProperty:input_type -> mygrpcservice.UpdatePropertyRequest
-	6, // 8: mygrpcservice.PropertyService.DeleteProperty:input_type -> mygrpcservice.DeletePropertyRequest
-	3, // 9: mygrpcservice.PropertyService.ReadProperty:output_type -> mygrpcservice.ReadPropertyResponse
-	1, // 10: mygrpcservice.PropertyService.CreateProperty:output_type -> mygrpcservice.CreatePropertyResponse
-	5, // 11: mygrpcservice.PropertyService.UpdateProperty:output_type -> mygrpcservice.UpdatePropertyResponse
-	7, // 12: mygrpcservice.PropertyService.DeleteProperty:output_type -> mygrpcservice.DeletePropertyResponse
-	9, // [9:13] is the sub-list for method output_type
-	5, // [5:9] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	11, // 0: mygrpcservice.CreatePropertyRequest.available_date:type_name -> google.protobuf.Timestamp
+	12, // 1: mygrpcservice.ReadPropertyResponse.available:type_name -> google.protobuf.BoolValue
+	11, // 2: mygrpcservice.ReadPropertyResponse.available_date:type_name -> google.protobuf.Timestamp
+	12, // 3: mygrpcservice.UpdatePropertyRequest.available:type_name -> google.protobuf.BoolValue
+	11, // 4: mygrpcservice.UpdatePropertyRequest.available_date:type_name -> google.protobuf.Timestamp
+	12, // 5: mygrpcservice.Property.available:type_name -> google.protobuf.BoolValue
+	11, // 6: mygrpcservice.Property.available_date:type_name -> google.protobuf.Timestamp
+	8,  // 7: mygrpcservice.ListPropertyByCategoryResponse.properties:type_name -> mygrpcservice.Property
+	2,  // 8: mygrpcservice.PropertyService.ReadProperty:input_type -> mygrpcservice.ReadPropertyRequest
+	0,  // 9: mygrpcservice.PropertyService.CreateProperty:input_type -> mygrpcservice.CreatePropertyRequest
+	4,  // 10: mygrpcservice.PropertyService.UpdateProperty:input_type -> mygrpcservice.UpdatePropertyRequest
+	6,  // 11: mygrpcservice.PropertyService.DeleteProperty:input_type -> mygrpcservice.DeletePropertyRequest
+	9,  // 12: mygrpcservice.PropertyService.ListPropertyByCategory:input_type -> mygrpcservice.PropertyListByCategoryRequest
+	3,  // 13: mygrpcservice.PropertyService.ReadProperty:output_type -> mygrpcservice.ReadPropertyResponse
+	1,  // 14: mygrpcservice.PropertyService.CreateProperty:output_type -> mygrpcservice.CreatePropertyResponse
+	5,  // 15: mygrpcservice.PropertyService.UpdateProperty:output_type -> mygrpcservice.UpdatePropertyResponse
+	7,  // 16: mygrpcservice.PropertyService.DeleteProperty:output_type -> mygrpcservice.DeletePropertyResponse
+	10, // 17: mygrpcservice.PropertyService.ListPropertyByCategory:output_type -> mygrpcservice.ListPropertyByCategoryResponse
+	13, // [13:18] is the sub-list for method output_type
+	8,  // [8:13] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_property_service_proto_init() }
@@ -662,7 +919,7 @@ func file_property_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_property_service_proto_rawDesc), len(file_property_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
