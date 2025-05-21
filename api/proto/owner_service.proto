@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package mygrpcservice;
+
+option go_package = "property-service/api/proto;proto";
+import "google/api/annotations.proto";
+// Request and Response messages for the Create operation.
+message CreateOwnerRequest {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string telephone = 4;
+}
+
+message CreateOwnerResponse {
+    string id = 1;
+}
+
+// Request and Response messages for the Read operation.
+message ReadOwnerRequest {
+    string id = 1;
+}
+
+message ReadOwnerResponse {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string telephone = 4;
+}
+
+// Request and Response messages for the Update operation.
+message UpdateOwnerRequest {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string telephone = 4;
+}
+
+message UpdateOwnerResponse {
+    string id = 1;
+}
+
+// Request and Response messages for the Delete operation.
+message DeleteOwnerRequest {
+    string id = 1;
+}
+
+message DeleteOwnerResponse {
+    string id = 1;
+}
+
+// DomainService defines a set of CRUD operations.
+service OwnerService {
+    rpc CreateOwner(CreateOwnerRequest) returns (CreateOwnerResponse) {
+        option (google.api.http) = {
+            post: "/v1/owner"
+            body: "*"
+        };
+    }
+    rpc ReadOwner(ReadOwnerRequest) returns (ReadOwnerResponse) {
+        option (google.api.http) = {
+            get: "/v1/owner/{id}"
+        };
+    }
+    rpc UpdateOwner(UpdateOwnerRequest) returns (UpdateOwnerResponse) {
+        option (google.api.http) = {
+            put: "/v1/owner/{id}"
+            body: "*"
+        };
+    }
+    rpc DeleteOwner(DeleteOwnerRequest) returns (DeleteOwnerResponse) {
+        option (google.api.http) = {
+            delete: "/v1/owner/{id}"
+        };
+    }
+}

@@ -1,0 +1,36 @@
+FROM golang:1.24 AS builder
+WORKDIR /app
+
+# install pkg-config & libmongocrypt dev for cse
+RUN apt-get update && \
+    apt-get install -y \
+      pkg-config \
+      libmongocrypt-dev \
+      libssl3 \
+      libbson-1.0-0 \
+      ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+# build server binary with CSE enabled
+RUN CGO_ENABLED=1 GOOS=linux go build -tags="cse" -o property-service-server ./cmd/server
+
+FROM debian:bookworm-slim
+WORKDIR /root/
+
+# install cse runtime and other libs
+RUN apt-get update && \
+    apt-get install -y \
+      libmongocrypt0 \
+      libssl3 \
+      libbson-1.0-0 \
+      ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# copy in the server binary (note the name)
+COPY --from=builder /app/property-service-server .
+
+CMD ["./property-service-server"]

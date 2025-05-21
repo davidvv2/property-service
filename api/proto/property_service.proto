@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package mygrpcservice;
+
+option go_package = "property-service/api/proto;proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/api/annotations.proto";
+
+
+// Request and Response messages for the Create operation.
+message CreatePropertyRequest {
+    repeated string category = 1;
+    string description = 2;
+    string ownerID = 3;
+    string title = 4;
+    bool available = 5;
+    google.protobuf.Timestamp available_date = 6;
+    string address = 7;
+    uint32 sale_type = 8;
+}
+
+message CreatePropertyResponse {
+    string id = 1;
+}
+
+// Request and Response messages for the Read operation.
+message ReadPropertyRequest {
+    string id = 1;
+}
+
+message ReadPropertyResponse {
+    string id = 1;
+    repeated string category = 2;
+    string description = 3;
+    string ownerID = 4;
+    string title = 5;
+    google.protobuf.BoolValue available = 6;
+    google.protobuf.Timestamp available_date = 7;
+    string address = 8;
+    uint32 sale_type = 9;
+}
+
+// Request and Response messages for the Update operation.
+message UpdatePropertyRequest {
+    string id = 1;
+    google.protobuf.BoolValue available = 2;
+    google.protobuf.Timestamp available_date = 3;
+    string description = 4;
+    string title = 5;
+    repeated string category = 6;
+    string address = 7;
+    uint32 sale_type = 8;
+}
+
+message UpdatePropertyResponse {
+    string id = 1;
+}
+
+// Request and Response messages for the Delete operation.
+message DeletePropertyRequest {
+    string id = 1;
+}
+
+message DeletePropertyResponse {
+    string id = 1;
+}
+
+
+message Property {
+    string id = 1;
+    repeated string category = 2;
+    string description = 3;
+    string ownerID = 4;
+    string title = 5;
+    google.protobuf.BoolValue available = 6;
+    google.protobuf.Timestamp available_date = 7;
+    string address = 8;
+    uint32 sale_type = 9;
+}
+
+
+
+message PropertyListByCategoryRequest {
+    string category = 2;           // The category to filter properties.
+    uint32 sort = 3;               // Sort flag/direction.
+    uint32 search = 4;             // 0 = no token, 1 = searchAfter, 2 = searchBefore.
+    uint32 limit = 5;              // Maximum number of properties to return.
+    string paginationToken = 6;    // Pagination token from previous request (optional).
+}
+
+message ListPropertyByCategoryResponse {
+    repeated Property properties = 1;
+}
+
+// DomainService defines a set of CRUD operations.
+service PropertyService {
+    rpc ReadProperty(ReadPropertyRequest) returns (ReadPropertyResponse) {
+        option (google.api.http) = {
+            get: "/v1/property/{id}"
+        };
+    }
+    rpc CreateProperty(CreatePropertyRequest) returns (CreatePropertyResponse) {
+        option (google.api.http) = {
+            post: "/v1/property"
+            body: "*"
+        };
+    }
+    rpc UpdateProperty(UpdatePropertyRequest) returns (UpdatePropertyResponse) {
+        option (google.api.http) = {
+            patch: "/v1/property/{id}"
+            body: "*"
+        };
+    }
+    rpc DeleteProperty(DeletePropertyRequest) returns (DeletePropertyResponse) {
+        option (google.api.http) = {
+            delete: "/v1/property/{id}"
+        };
+    }
+    rpc ListPropertyByCategory(PropertyListByCategoryRequest) returns (ListPropertyByCategoryResponse) {
+        option (google.api.http) = {
+            get: "/v1/property"
+        };
+    }
+}
