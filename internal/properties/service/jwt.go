@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"property-service/pkg/crypto/signing"
-	"property-service/pkg/infrastructure/cache"
+	redis "property-service/pkg/infrastructure/cache"
 	"property-service/pkg/infrastructure/log"
 	"property-service/pkg/jwt"
 
@@ -17,14 +17,14 @@ type jwtManagers struct {
 }
 
 // createJWTManagers : will create and return a the necessary jwt creation objects for the application.
-func createJWTManagers(logger log.Logger, cacher cache.Cacher, v *validator.Validate) jwtManagers {
+func createJWTManagers(logger log.Logger, cacher redis.Cacher, v *validator.Validate) jwtManagers {
 	// Load in the public and private keys.
 	keys := signing.MustLoad(
 		os.Getenv("ed25519PublicKey"),
 		os.Getenv("ed25519PrivateKey"),
 	)
 	// Create the authentication jwt manager.
-	authentication := jwt.NewED25519Manager[jwt.AuthClaims](jwt.InitStruct{
+	authentication := jwt.NewED25519Manager(jwt.InitStruct{
 		Issuer:    "PropertyService",
 		Subject:   "Login",
 		PublicKey: keys.PublicKey, PrivateKey: keys.PrivateKey,
