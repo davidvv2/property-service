@@ -69,7 +69,7 @@ func createProperty(
 	)
 
 	// Aggregator
-	propAggregator := database.NewMongoGrouper[property.Property, property.Model[primitive.ObjectID]](
+	propAggregator := database.NewMongoGrouper(
 		l, factory.Property, connector, _PROPERTY,
 	)
 

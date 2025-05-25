@@ -3,7 +3,7 @@ package service
 import (
 	"property-service/internal/properties/app"
 	"property-service/pkg/configs"
-	"property-service/pkg/infrastructure/cache"
+	redis "property-service/pkg/infrastructure/cache"
 	"property-service/pkg/infrastructure/log"
 
 	"github.com/go-playground/validator/v10"
@@ -14,7 +14,7 @@ type Dependencies struct {
 	Repo    repositories
 	Factory factories
 	L       log.Logger
-	Cacher  cache.Cacher
+	Cacher  redis.Cacher
 	Jwt     jwtManagers
 	V       *validator.Validate
 	Config  configs.Config
@@ -32,7 +32,7 @@ func BuildDependencies(config configs.Config) Dependencies {
 	// Creates a new logger for the applications.
 	logger := log.NewZapImpl(&config.Backend)
 	// Creates a new cacher for the application.
-	cacher := cache.NewRedisCacher(logger, &config.Caching)
+	cacher := redis.NewRedisCacher(&config.Caching, logger)
 	// Creates a validator, this is used for validating structs.
 	validator := validator.New()
 	// return the dependency object.

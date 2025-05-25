@@ -83,19 +83,19 @@ func (fi FactoryImpl[databaseID]) New(
 	property NewPropertyParams,
 ) (*Property, error) {
 	propertyModel := &Property{
-		id:          property.PropertyID,
-		ownerID:     property.OwnerID,
-		category:    property.Category,
-		description: property.Description,
-		title:       property.Title,
-		metadata: Metadata{
+		ID:          property.PropertyID,
+		OwnerID:     property.OwnerID,
+		Category:    property.Category,
+		Description: property.Description,
+		Title:       property.Title,
+		Metadata: Metadata{
 			createdAt: time.Now(),
 			updatedAt: time.Time{},
 		},
-		available:     property.Available,
-		availableDate: property.AvailableDate,
-		address:       property.Address,
-		saleType:      property.SaleType,
+		Available:     property.Available,
+		AvailableDate: property.AvailableDate,
+		Address:       property.Address,
+		SaleType:      property.SaleType,
 	}
 	return propertyModel, fi.validate(propertyModel)
 }

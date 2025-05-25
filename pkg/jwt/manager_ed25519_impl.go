@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"property-service/pkg/errors"
-	"property-service/pkg/infrastructure/cache"
+	redis "property-service/pkg/infrastructure/cache"
 	"property-service/pkg/infrastructure/log"
 
 	"github.com/go-jose/go-jose/v3"
@@ -26,7 +26,7 @@ type ManagerED25519Impl[T AuthClaims] struct {
 	v         *validator.Validate
 	jwtSigner jose.Signer
 
-	Cache cache.Cacher
+	Cache redis.Cacher
 	log   log.Logger
 
 	issuer  string
@@ -39,7 +39,7 @@ type ManagerED25519Impl[T AuthClaims] struct {
 // InitStruct : Used to initialise the jwt object.
 type InitStruct struct {
 	V          *validator.Validate
-	Cache      cache.Cacher
+	Cache      redis.Cacher
 	Log        log.Logger
 	Issuer     string
 	Subject    string

@@ -59,14 +59,14 @@ func (s *MyPropertyService) ReadProperty(ctx context.Context, req *proto.ReadPro
 	// Return the response
 	return &proto.ReadPropertyResponse{
 		Id:            req.Id,
-		OwnerID:       property.OwnerID(),
-		Address:       property.Address(),
-		Description:   property.Description(),
-		Title:         property.Title(),
-		AvailableDate: timestamppb.New(property.AvailableDate()),
-		Available:     wrapperspb.Bool(property.Available()),
-		SaleType:      uint32(property.SaleType()),
-		Category:      []string{property.Category()},
+		OwnerID:       property.OwnerID,
+		Address:       property.Address,
+		Description:   property.Description,
+		Title:         property.Title,
+		AvailableDate: timestamppb.New(property.AvailableDate),
+		Available:     wrapperspb.Bool(property.Available),
+		SaleType:      uint32(property.SaleType),
+		Category:      []string{property.Category},
 	}, nil
 }
 
@@ -135,17 +135,17 @@ func (s *MyPropertyService) ListPropertyByCategory(ctx context.Context, req *pro
 	// Convert properties to proto format
 	var propertyList []*proto.Property
 	for _, property := range properties.Properties {
-		s.AppService.Log.Debug("Converting property to proto format: %s", property.ID())
+		s.AppService.Log.Debug("Converting property to proto format: %s", property.ID)
 		propertyList = append(propertyList, &proto.Property{
-			Id:            property.ID(),
-			OwnerID:       property.OwnerID(),
-			Address:       property.Address(),
-			Description:   property.Description(),
-			Title:         property.Title(),
-			AvailableDate: timestamppb.New(property.AvailableDate()),
-			Available:     wrapperspb.Bool(property.Available()),
-			SaleType:      uint32(property.SaleType()),
-			Category:      []string{property.Category()},
+			Id:            property.ID,
+			OwnerID:       property.OwnerID,
+			Address:       property.Address,
+			Description:   property.Description,
+			Title:         property.Title,
+			AvailableDate: timestamppb.New(property.AvailableDate),
+			Available:     wrapperspb.Bool(property.Available),
+			SaleType:      uint32(property.SaleType),
+			Category:      []string{property.Category},
 		})
 	}
 	return &proto.ListPropertyByCategoryResponse{

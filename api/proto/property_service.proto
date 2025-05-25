@@ -10,7 +10,7 @@ import "google/api/annotations.proto";
 
 // Request and Response messages for the Create operation.
 message CreatePropertyRequest {
-    repeated string category = 1;
+    string category = 1;
     string description = 2;
     string ownerID = 3;
     string title = 4;
@@ -27,18 +27,6 @@ message CreatePropertyResponse {
 // Request and Response messages for the Read operation.
 message ReadPropertyRequest {
     string id = 1;
-}
-
-message ReadPropertyResponse {
-    string id = 1;
-    repeated string category = 2;
-    string description = 3;
-    string ownerID = 4;
-    string title = 5;
-    google.protobuf.BoolValue available = 6;
-    google.protobuf.Timestamp available_date = 7;
-    string address = 8;
-    uint32 sale_type = 9;
 }
 
 // Request and Response messages for the Update operation.
@@ -91,11 +79,12 @@ message PropertyListByCategoryRequest {
 
 message ListPropertyByCategoryResponse {
     repeated Property properties = 1;
+    string paginationToken = 2;   // Token for the next page of results.
 }
 
 // DomainService defines a set of CRUD operations.
 service PropertyService {
-    rpc ReadProperty(ReadPropertyRequest) returns (ReadPropertyResponse) {
+    rpc ReadProperty(ReadPropertyRequest) returns (Property) {
         option (google.api.http) = {
             get: "/v1/property/{id}"
         };
