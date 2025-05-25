@@ -43,36 +43,35 @@ func MapModelToProperty[Old any](
 		return nil, ownerIDErr
 	}
 	return &Property{
-		id:          propertyID,
-		ownerID:     ownerID,
-		category:    oldProperty.Category,
-		description: oldProperty.Description,
-		title:       oldProperty.Title,
-		metadata: Metadata{
+		ID:          propertyID,
+		OwnerID:     ownerID,
+		Category:    oldProperty.Category,
+		Description: oldProperty.Description,
+		Title:       oldProperty.Title,
+		Metadata: Metadata{
 			createdAt: oldProperty.Metadata.CreatedAt,
 			updatedAt: oldProperty.Metadata.UpdatedAt,
 		},
-		available:     oldProperty.Available,
-		availableDate: oldProperty.AvailableDate,
-		address:       oldProperty.Address,
-		saleType:      uint8(oldProperty.SaleType),
+		Available:     oldProperty.Available,
+		AvailableDate: oldProperty.AvailableDate,
+		Address:       oldProperty.Address,
+		SaleType:      uint8(oldProperty.SaleType),
 	}, err
 }
 
 // Property : This domain model contains a property voucher model.
 type Property struct {
-	id            string    `validate:"required"`
-	ownerID       string    `validate:"required"`
-	category      string    `validate:"required"`
-	description   string    `validate:"required"`
-	title         string    `validate:"required"`
-	metadata      Metadata  `validate:"required"`
-	available     bool      `validate:"required"`
-	availableDate time.Time `validate:"required"`
-	address       string    `validate:"required"`
-	saleType      uint8     `validate:"required"`
+	ID            string    `json:"id" validate:"required"`
+	OwnerID       string    `json:"ownerID" validate:"required"`
+	Category      string    `json:"category" validate:"required"`
+	Description   string    `json:"description" validate:"required"`
+	Title         string    `json:"title" validate:"required"`
+	Metadata      Metadata  `json:"metadata" validate:"required"`
+	Available     bool      `json:"available" validate:"required"`
+	AvailableDate time.Time `json:"availableDate" validate:"required"`
+	Address       string    `json:"address" validate:"required"`
+	SaleType      uint8     `json:"saleType" validate:"required"`
 }
-
 type Metadata struct {
 	createdAt time.Time `bson:"CreatedAt"`
 	updatedAt time.Time `bson:"UpdatedAt"`
@@ -83,11 +82,11 @@ func MapPropertyToModel[New any](
 	oldProperty Property,
 ) (*Model[New], error) {
 	// Map IDs
-	propertyID, err := mappingFunc(oldProperty.id)
+	propertyID, err := mappingFunc(oldProperty.ID)
 	if err != nil {
 		return nil, err
 	}
-	ownerID, ownerIDErr := mappingFunc(oldProperty.id)
+	ownerID, ownerIDErr := mappingFunc(oldProperty.OwnerID)
 	if ownerIDErr != nil {
 		return nil, ownerIDErr
 	}
@@ -96,16 +95,16 @@ func MapPropertyToModel[New any](
 		ID:      propertyID,
 		OwnerID: ownerID,
 
-		Category:    oldProperty.category,
-		Description: oldProperty.description,
-		Title:       oldProperty.title,
+		Category:    oldProperty.Category,
+		Description: oldProperty.Description,
+		Title:       oldProperty.Title,
 		Metadata: MetadataModel{
-			CreatedAt: oldProperty.metadata.createdAt,
-			UpdatedAt: oldProperty.metadata.updatedAt,
+			CreatedAt: oldProperty.Metadata.createdAt,
+			UpdatedAt: oldProperty.Metadata.updatedAt,
 		},
-		Available:     oldProperty.available,
-		AvailableDate: oldProperty.availableDate,
-		Address:       oldProperty.address,
-		SaleType:      SaleType(oldProperty.saleType),
+		Available:     oldProperty.Available,
+		AvailableDate: oldProperty.AvailableDate,
+		Address:       oldProperty.Address,
+		SaleType:      SaleType(oldProperty.SaleType),
 	}, err
 }

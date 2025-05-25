@@ -49,6 +49,35 @@ func (rc *RedisCacherImpl) KeyGet(ctx context.Context, key string) ([]byte, erro
 	return []byte(cache), nil
 }
 
+// KeysGet retrieves all keys matching a given pattern.
+func (rc *RedisCacherImpl) KeysGet(ctx context.Context, pattern string) ([]string, error) {
+	keys, err := rc.Client.Keys(ctx, pattern).Result()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get keys: %w", err)
+	}
+	var results []string
+	for _, key := range keys {
+		value, err := rc.Client.Get(ctx, key).Result()
+		if err != nil {
+			if !errors.Is(err, redis.Nil) {
+				return nil, fmt.Errorf("failed to get key %s: %w", key, err)
+			}
+			// If the key does not exist, we can skip it.
+			continue
+		}
+		results = append(results, value)
+	}
+	return results, nil
+}
+
+// KeyDelete deletes a key from the Redis store.
+func (rc *RedisCacherImpl) KeyDelete(ctx context.Context, key string) error {
+	if err := rc.Client.Del(ctx, key).Err(); err != nil {
+		return fmt.Errorf("failed to delete key: %w", err)
+	}
+	return nil
+}
+
 // KeyExist checks if a key exists in the Redis store.
 func (rc *RedisCacherImpl) KeyExist(ctx context.Context, key string) (bool, error) {
 	response, err := rc.Client.Exists(ctx, key).Result()
