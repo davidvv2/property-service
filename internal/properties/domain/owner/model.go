@@ -5,10 +5,10 @@ import "time"
 type SaleType uint8
 
 type Model[ID any] struct {
-	ID        ID            `bson:"_id" validate:"required"`
-	Name      string        `bson:"Name" validate:"required"`
+	ID        ID            `bson:"_id" validate:"required,len=24"`
+	Name      string        `bson:"Name" validate:"required,lt=100"`
 	Email     string        `bson:"Email" validate:"required,email"`
-	Telephone string        `bson:"Telephone" validate:"required"`
+	Telephone string        `bson:"Telephone" validate:"required,gte=7,lte=15"`
 	Metadata  MetadataModel `bson:"Metadata" validate:"required"`
 }
 

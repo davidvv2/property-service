@@ -83,8 +83,8 @@ func (s *UpdatePropertyTestSuite) TestUpdatePropertyHandler() {
 	property, err := s.ServiceDep.Repo.PropertyRepository.Get(s.ctx, s.params.Server, s.params.PropertyID)
 	s.NoError(err, "Expected no error when finding the property")
 	s.NotNil(property, "Expected property to be found")
-	s.Equal(s.params.Title, property.Title(), "Expected property title to match")
-	s.Equal(s.params.Description, property.Description(), "Expected property description to match")
+	s.Equal(s.params.Title, property.Title, "Expected property title to match")
+	s.Equal(s.params.Description, property.Description, "Expected property description to match")
 }
 
 // func (s *UpdatePropertyTestSuite) TearDownSuite() {

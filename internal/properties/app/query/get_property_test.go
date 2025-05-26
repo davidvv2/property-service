@@ -70,8 +70,8 @@ func (s *GetPropertyTestSuite) TestCreatePropertyHandler() {
 	property, err := s.handler.Handle(s.ctx, s.params)
 	s.NoError(err, "Expected no error when finding the property")
 	s.NotNil(property, "Expected property to be found")
-	s.Equal(s.newParams.Title, property.Title(), "Expected property title to match")
-	s.Equal(s.newParams.Description, property.Description(), "Expected property description to match")
+	s.Equal(s.newParams.Title, property.Title, "Expected property title to match")
+	s.Equal(s.newParams.Description, property.Description, "Expected property description to match")
 }
 
 func (s *GetPropertyTestSuite) TearDownSuite() {
