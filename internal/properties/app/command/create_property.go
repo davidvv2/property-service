@@ -13,7 +13,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// CreatePropertyCommand : This is the register request in a struct format.
+// CreatePropertyCommand : This is the create property request in a struct format.
 type CreatePropertyCommand struct {
 	PropertyID    string    `validate:"required"`
 	OwnerID       string    `validate:"required"`
@@ -27,7 +27,39 @@ type CreatePropertyCommand struct {
 	Server        string    `validate:"required"`
 }
 
-// Validate the register User command.
+// CreatePropertyHandler is a CQRS endpoint that handles a command to create a property.
+// It implements the CommandHandler interface for the CreatePropertyCommand.
+// The handler creates a new property in the database.
+type CreatePropertyHandler decorator.CommandHandler[CreatePropertyCommand]
+
+type CreatePropertyHandlerImpl struct {
+	repository property.Repository
+	validator  *validator.Validate
+	log        log.Logger
+}
+
+// NewCreatePropertyHandler creates a new instance of CreatePropertyHandler,
+// applying necessary decorators for logging and validation.
+func NewCreatePropertyHandler(
+	repository property.Repository,
+	logger log.Logger,
+	validator *validator.Validate,
+) CreatePropertyHandler {
+	if repository == nil {
+		logger.Panic("nil repository")
+	}
+	return decorator.ApplyCommandDecorators(
+		CreatePropertyHandlerImpl{
+			repository: repository,
+			validator:  validator,
+			log:        logger,
+		},
+		logger,
+		validator,
+	)
+}
+
+// Validate the create property command.
 func (cph CreatePropertyHandlerImpl) Handle(
 	c context.Context, cmd CreatePropertyCommand,
 ) error {
@@ -52,35 +84,4 @@ func (cph CreatePropertyHandlerImpl) Handle(
 		)
 	}
 	return nil
-}
-
-// CreatePropertyHandler is a CQRS endpoint that handles a command to retrieve a user's login attempt history.
-// It implements the CommandHandler interface for the VerifyDeviceCommand.
-// The handler retrieves the user's login attempt history from the database and returns it to the caller.
-type CreatePropertyHandler decorator.CommandHandler[CreatePropertyCommand]
-
-type CreatePropertyHandlerImpl struct {
-	repository property.Repository
-	validator  *validator.Validate
-	log        log.Logger
-}
-
-// NewCreatePropertyHandler : handles the login attempt query.
-func NewCreatePropertyHandler(
-	repository property.Repository,
-	logger log.Logger,
-	validator *validator.Validate,
-) CreatePropertyHandler {
-	if repository == nil {
-		logger.Panic("nil repository")
-	}
-	return decorator.ApplyCommandDecorators(
-		CreatePropertyHandlerImpl{
-			repository: repository,
-			validator:  validator,
-			log:        logger,
-		},
-		logger,
-		validator,
-	)
 }

@@ -16,14 +16,14 @@ import (
 type ListPropertiesByCategoryQuery struct {
 	Category        string `validate:"required"`
 	Sort            uint8  `validate:"required"`
-	Search          uint8
+	Search          uint8  `validate:"omitempty"`
 	Limit           uint16 `validate:"required"`
 	PaginationToken string `validate:"omitempty"`
 	Server          string `validate:"required"`
 }
 
-// ListPropertiesByCategoryHandler is a CQRS endpoint that handles a command to retrieve a property's login attempt history.
-// It implements the QueryHandler interface for the LoginAttemptQuery.
+// ListPropertiesByCategoryHandler is a CQRS endpoint that handles a command to retrieve a list of properties by category.
+// It implements the QueryHandler interface for the ListPropertiesByCategoryQuery.
 // The handler retrieves the property model from the database and returns it to the caller.
 type ListPropertiesByCategoryHandler decorator.QueryHandler[ListPropertiesByCategoryQuery, *ListPropertiesByCategoryResult]
 
@@ -32,7 +32,8 @@ type ListPropertyHandlerImpl struct {
 	validator  *validator.Validate
 }
 
-// NewListPropertiesByCategoryHandler : handles the get property attempt query.
+// NewListPropertiesByCategoryHandler creates a new instance of ListPropertiesByCategoryHandler,
+// applying decorators for logging and validation.
 func NewListPropertiesByCategoryHandler(
 	propRepo property.Repository,
 	logger log.Logger,
@@ -51,7 +52,7 @@ func NewListPropertiesByCategoryHandler(
 	)
 }
 
-// Handler method takes a context and returns a flat buffer response
+// Handler method takes a context and returns a ListPropertiesByCategoryResult
 // and an error.
 func (guh ListPropertyHandlerImpl) Handle(c context.Context, cmd ListPropertiesByCategoryQuery,
 ) (*ListPropertiesByCategoryResult, error) {

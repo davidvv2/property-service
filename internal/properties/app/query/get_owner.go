@@ -12,14 +12,13 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// GetOwnerQuery : This is used to update the owner profile.
+// GetOwnerQuery : This is used to retrieve the owner profile.
 type GetOwnerQuery struct {
 	ID     string `validate:"required"`
 	Server string `validate:"required"`
 }
 
-// GetOwnerHandler is a CQRS endpoint that handles a command to retrieve a owner's login attempt history.
-// It implements the QueryHandler interface for the LoginAttemptQuery.
+// GetOwnerHandler is a CQRS endpoint that handles a command to retrieve a owner's profile.
 // The handler retrieves the owner model from the database and returns it to the caller.
 type GetOwnerHandler decorator.QueryHandler[GetOwnerQuery, *owner.Owner]
 
@@ -28,7 +27,8 @@ type getOwnerHandlerImpl struct {
 	validator  *validator.Validate
 }
 
-// NewGetOwnerHandler : handles the get owner attempt query.
+// NewGetOwnerHandler creates a new instance of GetOwnerHandler,
+// applying decorators for logging and validation.
 func NewGetOwnerHandler(
 	propRepo owner.Repository,
 	logger log.Logger,
@@ -47,8 +47,7 @@ func NewGetOwnerHandler(
 	)
 }
 
-// Handler method takes a context and returns a flat buffer response
-// and an error.
+// Handler method takes a context and returns an owner model and an error.
 func (guh getOwnerHandlerImpl) Handle(c context.Context, cmd GetOwnerQuery,
 ) (*owner.Owner, error) {
 	owner, err := guh.repository.Get(c, cmd.Server, cmd.ID)

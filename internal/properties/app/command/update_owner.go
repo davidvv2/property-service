@@ -12,7 +12,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// UpdateOwnerCommand : This is the register request in a struct format.
+// UpdateOwnerCommand : This is the update owner request in a struct format.
 type UpdateOwnerCommand struct {
 	OwnerID   string `validate:"required"`
 	Name      string
@@ -21,7 +21,39 @@ type UpdateOwnerCommand struct {
 	Server    string `validate:"required"`
 }
 
-// Validate the register User command.
+// UpdateOwnerHandler is a CQRS endpoint that handles a command to update an owner's information.
+// It implements the CommandHandler interface for the UpdateOwnerCommand.
+// The handler updates an owner's information in the database.
+type UpdateOwnerHandler decorator.CommandHandler[UpdateOwnerCommand]
+
+type UpdateOwnerHandlerImpl struct {
+	repository owner.Repository
+	validator  *validator.Validate
+	log        log.Logger
+}
+
+// NewUpdateOwnerHandler creates a new instance of UpdateOwnerHandler,
+// applying necessary decorators for logging and validation.
+func NewUpdateOwnerHandler(
+	repository owner.Repository,
+	logger log.Logger,
+	validator *validator.Validate,
+) UpdateOwnerHandler {
+	if repository == nil {
+		logger.Panic("nil repository")
+	}
+	return decorator.ApplyCommandDecorators(
+		UpdateOwnerHandlerImpl{
+			repository: repository,
+			validator:  validator,
+			log:        logger,
+		},
+		logger,
+		validator,
+	)
+}
+
+// Handle the update owner command.
 func (cph UpdateOwnerHandlerImpl) Handle(
 	c context.Context, cmd UpdateOwnerCommand,
 ) error {
@@ -41,35 +73,4 @@ func (cph UpdateOwnerHandlerImpl) Handle(
 		)
 	}
 	return nil
-}
-
-// UpdateOwnerHandler is a CQRS endpoint that handles a command to retrieve a user's login attempt history.
-// It implements the CommandHandler interface for the VerifyDeviceCommand.
-// The handler retrieves the user's login attempt history from the database and returns it to the caller.
-type UpdateOwnerHandler decorator.CommandHandler[UpdateOwnerCommand]
-
-type UpdateOwnerHandlerImpl struct {
-	repository owner.Repository
-	validator  *validator.Validate
-	log        log.Logger
-}
-
-// NewUpdateOwnerHandler : handles the login attempt query.
-func NewUpdateOwnerHandler(
-	repository owner.Repository,
-	logger log.Logger,
-	validator *validator.Validate,
-) UpdateOwnerHandler {
-	if repository == nil {
-		logger.Panic("nil repository")
-	}
-	return decorator.ApplyCommandDecorators(
-		UpdateOwnerHandlerImpl{
-			repository: repository,
-			validator:  validator,
-			log:        logger,
-		},
-		logger,
-		validator,
-	)
 }

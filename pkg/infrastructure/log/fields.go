@@ -2,7 +2,7 @@ package log
 
 import "go.uber.org/zap"
 
-type Fields map[string]interface{}
+type Fields map[string]any
 
 // toZapFields converts a Fields map to a slice of zap.Field.
 func toZapFields(fields Fields) []zap.Field {

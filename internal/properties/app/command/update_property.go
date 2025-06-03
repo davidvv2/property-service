@@ -13,7 +13,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// UpdatePropertyCommand : This is the register request in a struct format.
+// UpdatePropertyCommand : This is the update property request in a struct format.
 type UpdatePropertyCommand struct {
 	PropertyID    string `validate:"required"`
 	Available     *bool
@@ -26,7 +26,39 @@ type UpdatePropertyCommand struct {
 	Server        string `validate:"required"`
 }
 
-// Validate the register User command.
+// UpdatePropertyHandler is a CQRS endpoint that handles a command to update a property.
+// It implements the CommandHandler interface for the VerifyDeviceCommand.
+// The handler updates the information of a property in the database.
+type UpdatePropertyHandler decorator.CommandHandler[UpdatePropertyCommand]
+
+type UpdatePropertyHandlerImpl struct {
+	repository property.Repository
+	validator  *validator.Validate
+	log        log.Logger
+}
+
+// NewUpdatePropertyHandler creates a new instance of UpdatePropertyHandler,
+// applying necessary decorators for logging and validation.
+func NewUpdatePropertyHandler(
+	repository property.Repository,
+	logger log.Logger,
+	validator *validator.Validate,
+) UpdatePropertyHandler {
+	if repository == nil {
+		logger.Panic("nil repository")
+	}
+	return decorator.ApplyCommandDecorators(
+		UpdatePropertyHandlerImpl{
+			repository: repository,
+			validator:  validator,
+			log:        logger,
+		},
+		logger,
+		validator,
+	)
+}
+
+// Handle the update property command.
 func (cph UpdatePropertyHandlerImpl) Handle(
 	c context.Context, cmd UpdatePropertyCommand,
 ) error {
@@ -50,35 +82,4 @@ func (cph UpdatePropertyHandlerImpl) Handle(
 		)
 	}
 	return nil
-}
-
-// UpdatePropertyHandler is a CQRS endpoint that handles a command to retrieve a user's login attempt history.
-// It implements the CommandHandler interface for the VerifyDeviceCommand.
-// The handler retrieves the user's login attempt history from the database and returns it to the caller.
-type UpdatePropertyHandler decorator.CommandHandler[UpdatePropertyCommand]
-
-type UpdatePropertyHandlerImpl struct {
-	repository property.Repository
-	validator  *validator.Validate
-	log        log.Logger
-}
-
-// NewUpdatePropertyHandler : handles the login attempt query.
-func NewUpdatePropertyHandler(
-	repository property.Repository,
-	logger log.Logger,
-	validator *validator.Validate,
-) UpdatePropertyHandler {
-	if repository == nil {
-		logger.Panic("nil repository")
-	}
-	return decorator.ApplyCommandDecorators(
-		UpdatePropertyHandlerImpl{
-			repository: repository,
-			validator:  validator,
-			log:        logger,
-		},
-		logger,
-		validator,
-	)
 }

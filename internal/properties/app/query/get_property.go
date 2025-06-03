@@ -12,14 +12,14 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// GetPropertyQuery : This is used to update the property profile.
+// GetPropertyQuery : This is used to retrieve a property model.
 type GetPropertyQuery struct {
 	ID     string `validate:"required"`
 	Server string `validate:"required"`
 }
 
-// GetPropertyHandler is a CQRS endpoint that handles a command to retrieve a property's login attempt history.
-// It implements the QueryHandler interface for the LoginAttemptQuery.
+// GetPropertyHandler is a CQRS endpoint that handles a query to retrieve a property's information.
+// It implements the QueryHandler interface for the GetPropertyQuery.
 // The handler retrieves the property model from the database and returns it to the caller.
 type GetPropertyHandler decorator.QueryHandler[GetPropertyQuery, *property.Property]
 
@@ -28,7 +28,8 @@ type GetPropertyHandlerImpl struct {
 	validator  *validator.Validate
 }
 
-// NewGetPropertyHandler : handles the get property attempt query.
+// NewGetPropertyHandler creates a new instance of GetPropertyHandler,
+// applying decorators for logging and validation.
 func NewGetPropertyHandler(
 	propRepo property.Repository,
 	logger log.Logger,
@@ -47,8 +48,7 @@ func NewGetPropertyHandler(
 	)
 }
 
-// Handler method takes a context and returns a flat buffer response
-// and an error.
+// Handler method takes a context and returns a property model and an error.
 func (guh GetPropertyHandlerImpl) Handle(c context.Context, cmd GetPropertyQuery,
 ) (*property.Property, error) {
 	property, err := guh.repository.Get(c, cmd.Server, cmd.ID)
