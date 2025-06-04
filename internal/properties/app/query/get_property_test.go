@@ -8,6 +8,7 @@ import (
 	"property-service/internal/properties/app/query"
 	"property-service/internal/properties/domain/property"
 	"property-service/internal/properties/service"
+	"property-service/pkg/address"
 	"property-service/pkg/configs"
 	"property-service/pkg/infrastructure/database"
 	"property-service/pkg/infrastructure/log"
@@ -44,9 +45,16 @@ func (s *GetPropertyTestSuite) SetupSuite() {
 		Server: "Test",
 	}
 	s.newParams = property.NewPropertyParams{
-		PropertyID:    s.params.ID,
-		OwnerID:       database.NewStringID(),
-		Address:       "123 Main St",
+		PropertyID: s.params.ID,
+		OwnerID:    database.NewStringID(),
+		Address: address.Address{
+			FirstLine:  "42",
+			Street:     "Triq ic-Cangar",
+			City:       "Victoria",
+			County:     "",
+			Country:    "Malta",
+			PostalCode: "VCT2162",
+		},
 		Description:   "A beautiful property",
 		Title:         "Beautiful Property",
 		Category:      "House",
@@ -72,6 +80,7 @@ func (s *GetPropertyTestSuite) TestCreatePropertyHandler() {
 	s.NotNil(property, "Expected property to be found")
 	s.Equal(s.newParams.Title, property.Title, "Expected property title to match")
 	s.Equal(s.newParams.Description, property.Description, "Expected property description to match")
+	s.Fail("Forced failure to test suite teardown", nil)
 }
 
 func (s *GetPropertyTestSuite) TearDownSuite() {

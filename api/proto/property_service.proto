@@ -16,7 +16,7 @@ message CreatePropertyRequest {
     string title = 4;
     bool available = 5;
     google.protobuf.Timestamp available_date = 6;
-    string address = 7;
+    Address address = 7;
     uint32 sale_type = 8;
 }
 
@@ -37,7 +37,7 @@ message UpdatePropertyRequest {
     string description = 4;
     string title = 5;
     repeated string category = 6;
-    string address = 7;
+    Address address = 7;
     uint32 sale_type = 8;
 }
 
@@ -57,16 +57,27 @@ message DeletePropertyResponse {
 
 message Property {
     string id = 1;
-    repeated string category = 2;
+    string category = 2;
     string description = 3;
     string ownerID = 4;
     string title = 5;
     google.protobuf.BoolValue available = 6;
     google.protobuf.Timestamp available_date = 7;
-    string address = 8;
+    optional Address address = 8;
     uint32 sale_type = 9;
 }
 
+
+message Address {
+    string first_line = 1;
+    string street = 2;
+    string city = 3;
+    string county = 4;
+    string country = 5;
+    string postcode = 6;
+    optional float latitude = 7;
+    optional float longitude = 8;
+}
 
 
 message PropertyListByCategoryRequest {

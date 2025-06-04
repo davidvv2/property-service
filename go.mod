@@ -1,6 +1,8 @@
 module property-service
 
-go 1.23.9
+go 1.24.1
+
+toolchain go1.24.3
 
 require (
 	github.com/go-jose/go-jose/v3 v3.0.4
@@ -17,6 +19,7 @@ require (
 )
 
 require (
+	github.com/codingsince1985/geo-golang v1.8.5 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/snappy v1.0.0 // indirect

@@ -32,7 +32,7 @@ const (
 //
 // DomainService defines a set of CRUD operations.
 type PropertyServiceClient interface {
-	ReadProperty(ctx context.Context, in *ReadPropertyRequest, opts ...grpc.CallOption) (*ReadPropertyResponse, error)
+	ReadProperty(ctx context.Context, in *ReadPropertyRequest, opts ...grpc.CallOption) (*Property, error)
 	CreateProperty(ctx context.Context, in *CreatePropertyRequest, opts ...grpc.CallOption) (*CreatePropertyResponse, error)
 	UpdateProperty(ctx context.Context, in *UpdatePropertyRequest, opts ...grpc.CallOption) (*UpdatePropertyResponse, error)
 	DeleteProperty(ctx context.Context, in *DeletePropertyRequest, opts ...grpc.CallOption) (*DeletePropertyResponse, error)
@@ -47,9 +47,9 @@ func NewPropertyServiceClient(cc grpc.ClientConnInterface) PropertyServiceClient
 	return &propertyServiceClient{cc}
 }
 
-func (c *propertyServiceClient) ReadProperty(ctx context.Context, in *ReadPropertyRequest, opts ...grpc.CallOption) (*ReadPropertyResponse, error) {
+func (c *propertyServiceClient) ReadProperty(ctx context.Context, in *ReadPropertyRequest, opts ...grpc.CallOption) (*Property, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ReadPropertyResponse)
+	out := new(Property)
 	err := c.cc.Invoke(ctx, PropertyService_ReadProperty_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -103,7 +103,7 @@ func (c *propertyServiceClient) ListPropertyByCategory(ctx context.Context, in *
 //
 // DomainService defines a set of CRUD operations.
 type PropertyServiceServer interface {
-	ReadProperty(context.Context, *ReadPropertyRequest) (*ReadPropertyResponse, error)
+	ReadProperty(context.Context, *ReadPropertyRequest) (*Property, error)
 	CreateProperty(context.Context, *CreatePropertyRequest) (*CreatePropertyResponse, error)
 	UpdateProperty(context.Context, *UpdatePropertyRequest) (*UpdatePropertyResponse, error)
 	DeleteProperty(context.Context, *DeletePropertyRequest) (*DeletePropertyResponse, error)
@@ -118,7 +118,7 @@ type PropertyServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPropertyServiceServer struct{}
 
-func (UnimplementedPropertyServiceServer) ReadProperty(context.Context, *ReadPropertyRequest) (*ReadPropertyResponse, error) {
+func (UnimplementedPropertyServiceServer) ReadProperty(context.Context, *ReadPropertyRequest) (*Property, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadProperty not implemented")
 }
 func (UnimplementedPropertyServiceServer) CreateProperty(context.Context, *CreatePropertyRequest) (*CreatePropertyResponse, error) {

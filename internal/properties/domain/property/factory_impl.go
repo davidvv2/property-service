@@ -3,6 +3,7 @@ package property
 import (
 	"time"
 
+	"property-service/pkg/address"
 	"property-service/pkg/errors"
 
 	"github.com/go-playground/validator/v10"
@@ -68,15 +69,15 @@ func (fi FactoryImpl[databaseID]) validate(la *Property) error {
 }
 
 type NewPropertyParams struct {
-	PropertyID    string    `validate:"required"`
-	OwnerID       string    `validate:"required"`
-	Category      string    `validate:"required"`
-	Description   string    `validate:"required"`
-	Title         string    `validate:"required"`
-	Available     bool      `validate:"required"`
-	AvailableDate time.Time `validate:"required"`
-	Address       string    `validate:"required"`
-	SaleType      uint8     `validate:"required"`
+	PropertyID    string `validate:"required"`
+	OwnerID       string `validate:"required"`
+	Category      string `validate:"required"`
+	Description   string `validate:"required"`
+	Title         string `validate:"required"`
+	Available     bool
+	AvailableDate time.Time       `validate:"required"`
+	Address       address.Address `validate:"required"`
+	SaleType      uint8           `validate:"required"`
 }
 
 func (fi FactoryImpl[databaseID]) New(

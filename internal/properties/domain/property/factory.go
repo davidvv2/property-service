@@ -1,6 +1,7 @@
 package property
 
 import (
+	"property-service/pkg/address"
 	"property-service/pkg/helper/factory"
 	"time"
 )
@@ -30,11 +31,10 @@ func (p FactoryConfig) Validate() error {
 }
 
 type UpdatePropertyParams struct {
-	Available     *bool
 	AvailableDate time.Time
 	Description   string
 	Title         string
 	Category      string
-	Address       string
+	Address       address.Address
 	SaleType      uint8
 }

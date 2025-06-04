@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"property-service/internal/properties/domain/property"
+	"property-service/pkg/address"
 	"property-service/pkg/decorator"
 	"property-service/pkg/errors"
 	"property-service/pkg/errors/codes"
@@ -15,16 +16,16 @@ import (
 
 // CreatePropertyCommand : This is the create property request in a struct format.
 type CreatePropertyCommand struct {
-	PropertyID    string    `validate:"required"`
-	OwnerID       string    `validate:"required"`
-	Category      string    `validate:"required"`
-	Description   string    `validate:"required"`
-	Title         string    `validate:"required"`
-	Available     bool      `validate:"required"`
-	AvailableDate time.Time `validate:"required"`
-	Address       string    `validate:"required"`
-	SaleType      uint8     `validate:"required"`
-	Server        string    `validate:"required"`
+	PropertyID    string          `validate:"required"`
+	OwnerID       string          `validate:"required"`
+	Category      string          `validate:"required"`
+	Description   string          `validate:"required"`
+	Title         string          `validate:"required"`
+	Available     bool            `validate:"required"`
+	AvailableDate time.Time       `validate:"required"`
+	Address       address.Address `validate:"required"`
+	SaleType      uint8           `validate:"required"`
+	Server        string          `validate:"required"`
 }
 
 // CreatePropertyHandler is a CQRS endpoint that handles a command to create a property.

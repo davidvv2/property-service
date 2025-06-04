@@ -8,6 +8,7 @@ import (
 	"property-service/internal/properties/app/command"
 	"property-service/internal/properties/domain/property"
 	"property-service/internal/properties/service"
+	"property-service/pkg/address"
 	"property-service/pkg/configs"
 	"property-service/pkg/infrastructure/database"
 	"property-service/pkg/infrastructure/log"
@@ -50,9 +51,16 @@ func (s *DeletePropertyTestSuite) SetupTest() {
 		s.ctx,
 		s.params.Server,
 		property.NewPropertyParams{
-			PropertyID:    s.params.PropertyID,
-			OwnerID:       database.NewStringID(),
-			Address:       "123 Main St",
+			PropertyID: s.params.PropertyID,
+			OwnerID:    database.NewStringID(),
+			Address: address.Address{
+				FirstLine:  "42",
+				Street:     "Triq ic-Cangar",
+				City:       "Victoria",
+				County:     "",
+				Country:    "Malta",
+				PostalCode: "VCT2162",
+			},
 			Description:   "A beautiful property",
 			Title:         "Beautiful Property",
 			Category:      "House",

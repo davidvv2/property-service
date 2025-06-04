@@ -121,9 +121,6 @@ func (p *PropertyRepositoryMongoImpl) Update(
 
 	updateData := bson.M{}
 
-	if params.Available != nil { // if pointer type, or check for a valid condition
-		updateData["Available"] = *params.Available
-	}
 	if !params.AvailableDate.IsZero() {
 		updateData["AvailableDate"] = params.AvailableDate
 	}
@@ -136,7 +133,7 @@ func (p *PropertyRepositoryMongoImpl) Update(
 	if params.Category != "" {
 		updateData["Category"] = params.Category
 	}
-	if params.Address != "" {
+	if !params.Address.IsEmpty() {
 		updateData["Address"] = params.Address
 	}
 	if params.SaleType != 0 {
@@ -216,17 +213,6 @@ func (p *PropertyRepositoryMongoImpl) ListByCategory(
 	}
 
 	finalRes, getErr := res.GetAll(c)
-	p.log.InfoWithFields("Fetched properties",
-		log.Fields{
-			"count":           len(*finalRes),
-			"server":          server,
-			"category":        category,
-			"sort":            sort,
-			"limit":           limit,
-			"paginationToken": paginationToken,
-			"properties":      *finalRes,
-		},
-	)
 	if getErr != nil {
 		p.log.Debug("Error in getting all results: %v", getErr)
 		return nil, errors.NewHandlerError(

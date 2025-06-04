@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"property-service/internal/properties/domain/property"
+	"property-service/pkg/address"
 	"property-service/pkg/decorator"
 	"property-service/pkg/errors"
 	"property-service/pkg/errors/codes"
@@ -16,12 +17,11 @@ import (
 // UpdatePropertyCommand : This is the update property request in a struct format.
 type UpdatePropertyCommand struct {
 	PropertyID    string `validate:"required"`
-	Available     *bool
 	AvailableDate time.Time
 	Description   string
 	Title         string
 	Category      string
-	Address       string
+	Address       address.Address
 	SaleType      uint8
 	Server        string `validate:"required"`
 }
@@ -67,7 +67,6 @@ func (cph UpdatePropertyHandlerImpl) Handle(
 		cmd.Server,
 		cmd.PropertyID,
 		property.UpdatePropertyParams{
-			Available:     cmd.Available,
 			AvailableDate: cmd.AvailableDate,
 			Description:   cmd.Description,
 			Title:         cmd.Title,
