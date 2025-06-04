@@ -194,7 +194,18 @@ func (p *PropertyRepositoryMongoImpl) ListByCategory(
 		mongo.Pipeline{
 			filter,
 			bson.D{{Key: "$limit", Value: limit}},
-		},
+			bson.D{{Key: "$project", Value: bson.D{
+				{Key: "_id", Value: 1},
+				{Key: "OwnerID", Value: 1},
+				{Key: "Description", Value: 1},
+				{Key: "Title", Value: 1},
+				{Key: "Category", Value: 1},
+				{Key: "Available", Value: 1},
+				{Key: "AvailableDate", Value: 1},
+				{Key: "Address", Value: 1},
+				{Key: "SaleType", Value: 1},
+				{Key: "PaginationToken", Value: bson.D{{Key: "$meta", Value: "searchSequenceToken"}}},
+			}}}},
 	)
 	if aggErr != nil {
 		p.log.Debug("Error in aggregation: %v", aggErr)
@@ -205,7 +216,17 @@ func (p *PropertyRepositoryMongoImpl) ListByCategory(
 	}
 
 	finalRes, getErr := res.GetAll(c)
-
+	p.log.InfoWithFields("Fetched properties",
+		log.Fields{
+			"count":           len(*finalRes),
+			"server":          server,
+			"category":        category,
+			"sort":            sort,
+			"limit":           limit,
+			"paginationToken": paginationToken,
+			"properties":      *finalRes,
+		},
+	)
 	if getErr != nil {
 		p.log.Debug("Error in getting all results: %v", getErr)
 		return nil, errors.NewHandlerError(
