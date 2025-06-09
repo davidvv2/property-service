@@ -28,9 +28,9 @@ func (t *PaginationHelperMongoImpl) TextPaginationHelper(
 	if paginationToken != "" {
 		switch search {
 		case 1:
-			searchStage = append(searchStage, bson.E{Key: "searchAfter", Value: []interface{}{paginationToken}})
+			searchStage = append(searchStage, bson.E{Key: "searchAfter", Value: paginationToken})
 		case 2:
-			searchStage = append(searchStage, bson.E{Key: "searchBefore", Value: []interface{}{paginationToken}})
+			searchStage = append(searchStage, bson.E{Key: "searchBefore", Value: paginationToken})
 		}
 	}
 

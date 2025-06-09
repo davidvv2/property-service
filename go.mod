@@ -18,8 +18,9 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20250512202823-5a2f75b736a9
 )
 
+require github.com/codingsince1985/geo-golang v1.8.5
+
 require (
-	github.com/codingsince1985/geo-golang v1.8.5 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/snappy v1.0.0 // indirect

@@ -123,7 +123,7 @@ func (c *CachedPropertyRepository) ListByCategory(
 	search uint8,
 ) ([]property.Property, error) {
 	// Construct a cache key that uniquely identifies the query.
-	key := fmt.Sprintf("list:%s:%s:%s:%d:%d:%d", server, category, paginationToken, sort, limit, search)
+	key := fmt.Sprintf("list:%s:%s:%s:%d:%d", server, category, paginationToken, sort, limit)
 
 	// Attempt to get the cached list from Redis.
 	cachedData, err := c.redisAdapter.cacher.KeyGet(ctx, key)

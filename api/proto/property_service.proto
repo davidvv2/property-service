@@ -65,6 +65,7 @@ message Property {
     google.protobuf.Timestamp available_date = 7;
     optional Address address = 8;
     uint32 sale_type = 9;
+    string pagination_token = 10; // Token for pagination, if applicable.
 }
 
 
@@ -90,7 +91,6 @@ message PropertyListByCategoryRequest {
 
 message ListPropertyByCategoryResponse {
     repeated Property properties = 1;
-    string paginationToken = 2;   // Token for the next page of results.
 }
 
 // DomainService defines a set of CRUD operations.

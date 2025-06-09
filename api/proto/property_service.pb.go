@@ -449,18 +449,19 @@ func (x *DeletePropertyResponse) GetId() string {
 }
 
 type Property struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Category      string                 `protobuf:"bytes,2,opt,name=category,proto3" json:"category,omitempty"`
-	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	OwnerID       string                 `protobuf:"bytes,4,opt,name=ownerID,proto3" json:"ownerID,omitempty"`
-	Title         string                 `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
-	Available     *wrapperspb.BoolValue  `protobuf:"bytes,6,opt,name=available,proto3" json:"available,omitempty"`
-	AvailableDate *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=available_date,json=availableDate,proto3" json:"available_date,omitempty"`
-	Address       *Address               `protobuf:"bytes,8,opt,name=address,proto3,oneof" json:"address,omitempty"`
-	SaleType      uint32                 `protobuf:"varint,9,opt,name=sale_type,json=saleType,proto3" json:"sale_type,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Category        string                 `protobuf:"bytes,2,opt,name=category,proto3" json:"category,omitempty"`
+	Description     string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	OwnerID         string                 `protobuf:"bytes,4,opt,name=ownerID,proto3" json:"ownerID,omitempty"`
+	Title           string                 `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
+	Available       *wrapperspb.BoolValue  `protobuf:"bytes,6,opt,name=available,proto3" json:"available,omitempty"`
+	AvailableDate   *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=available_date,json=availableDate,proto3" json:"available_date,omitempty"`
+	Address         *Address               `protobuf:"bytes,8,opt,name=address,proto3,oneof" json:"address,omitempty"`
+	SaleType        uint32                 `protobuf:"varint,9,opt,name=sale_type,json=saleType,proto3" json:"sale_type,omitempty"`
+	PaginationToken string                 `protobuf:"bytes,10,opt,name=pagination_token,json=paginationToken,proto3" json:"pagination_token,omitempty"` // Token for pagination, if applicable.
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Property) Reset() {
@@ -554,6 +555,13 @@ func (x *Property) GetSaleType() uint32 {
 		return x.SaleType
 	}
 	return 0
+}
+
+func (x *Property) GetPaginationToken() string {
+	if x != nil {
+		return x.PaginationToken
+	}
+	return ""
 }
 
 type Address struct {
@@ -733,11 +741,10 @@ func (x *PropertyListByCategoryRequest) GetPaginationToken() string {
 }
 
 type ListPropertyByCategoryResponse struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	Properties      []*Property            `protobuf:"bytes,1,rep,name=properties,proto3" json:"properties,omitempty"`
-	PaginationToken string                 `protobuf:"bytes,2,opt,name=paginationToken,proto3" json:"paginationToken,omitempty"` // Token for the next page of results.
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Properties    []*Property            `protobuf:"bytes,1,rep,name=properties,proto3" json:"properties,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListPropertyByCategoryResponse) Reset() {
@@ -777,13 +784,6 @@ func (x *ListPropertyByCategoryResponse) GetProperties() []*Property {
 	return nil
 }
 
-func (x *ListPropertyByCategoryResponse) GetPaginationToken() string {
-	if x != nil {
-		return x.PaginationToken
-	}
-	return ""
-}
-
 var File_property_service_proto protoreflect.FileDescriptor
 
 const file_property_service_proto_rawDesc = "" +
@@ -816,7 +816,7 @@ const file_property_service_proto_rawDesc = "" +
 	"\x15DeletePropertyRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"(\n" +
 	"\x16DeletePropertyResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xe5\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x90\x03\n" +
 	"\bProperty\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
 	"\bcategory\x18\x02 \x01(\tR\bcategory\x12 \n" +
@@ -826,7 +826,9 @@ const file_property_service_proto_rawDesc = "" +
 	"\tavailable\x18\x06 \x01(\v2\x1a.google.protobuf.BoolValueR\tavailable\x12A\n" +
 	"\x0eavailable_date\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\ravailableDate\x125\n" +
 	"\aaddress\x18\b \x01(\v2\x16.mygrpcservice.AddressH\x00R\aaddress\x88\x01\x01\x12\x1b\n" +
-	"\tsale_type\x18\t \x01(\rR\bsaleTypeB\n" +
+	"\tsale_type\x18\t \x01(\rR\bsaleType\x12)\n" +
+	"\x10pagination_token\x18\n" +
+	" \x01(\tR\x0fpaginationTokenB\n" +
 	"\n" +
 	"\b_address\"\x81\x02\n" +
 	"\aAddress\x12\x1d\n" +
@@ -847,12 +849,11 @@ const file_property_service_proto_rawDesc = "" +
 	"\x04sort\x18\x03 \x01(\rR\x04sort\x12\x16\n" +
 	"\x06search\x18\x04 \x01(\rR\x06search\x12\x14\n" +
 	"\x05limit\x18\x05 \x01(\rR\x05limit\x12(\n" +
-	"\x0fpaginationToken\x18\x06 \x01(\tR\x0fpaginationToken\"\x83\x01\n" +
+	"\x0fpaginationToken\x18\x06 \x01(\tR\x0fpaginationToken\"Y\n" +
 	"\x1eListPropertyByCategoryResponse\x127\n" +
 	"\n" +
 	"properties\x18\x01 \x03(\v2\x17.mygrpcservice.PropertyR\n" +
-	"properties\x12(\n" +
-	"\x0fpaginationToken\x18\x02 \x01(\tR\x0fpaginationToken2\xf6\x04\n" +
+	"properties2\xf6\x04\n" +
 	"\x0fPropertyService\x12f\n" +
 	"\fReadProperty\x12\".mygrpcservice.ReadPropertyRequest\x1a\x17.mygrpcservice.Property\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/v1/property/{id}\x12v\n" +
 	"\x0eCreateProperty\x12$.mygrpcservice.CreatePropertyRequest\x1a%.mygrpcservice.CreatePropertyResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/property\x12{\n" +

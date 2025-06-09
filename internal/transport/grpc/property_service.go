@@ -187,12 +187,13 @@ func (s *MyPropertyService) ListPropertyByCategory(ctx context.Context, req *pro
 				Latitude:  latitude,
 				Longitude: longitude,
 			},
-			Description:   property.Description,
-			Title:         property.Title,
-			AvailableDate: timestamppb.New(property.AvailableDate),
-			Available:     wrapperspb.Bool(property.Available),
-			SaleType:      uint32(property.SaleType),
-			Category:      property.Category,
+			Description:     property.Description,
+			Title:           property.Title,
+			AvailableDate:   timestamppb.New(property.AvailableDate),
+			Available:       wrapperspb.Bool(property.Available),
+			SaleType:        uint32(property.SaleType),
+			Category:        property.Category,
+			PaginationToken: property.PaginationToken,
 		})
 	}
 	return &proto.ListPropertyByCategoryResponse{
