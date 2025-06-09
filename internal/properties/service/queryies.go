@@ -22,5 +22,10 @@ func (d Dependencies) createQueries() app.Queries {
 			d.L,
 			d.V,
 		),
+		ListPropertiesByOwner: query.NewListPropertiesByOwnerHandler(
+			d.Repo.PropertyRepository,
+			d.L,
+			d.V,
+		),
 	}
 }

@@ -145,7 +145,7 @@ func (s *MyPropertyService) DeleteProperty(ctx context.Context, req *proto.Delet
 	}, nil
 }
 
-func (s *MyPropertyService) ListPropertyByCategory(ctx context.Context, req *proto.PropertyListByCategoryRequest) (*proto.ListPropertyByCategoryResponse, error) {
+func (s *MyPropertyService) ListPropertyByCategory(ctx context.Context, req *proto.PropertyListByCategoryRequest) (*proto.ListPropertyResponse, error) {
 	s.AppService.Log.Debug("Listing properties")
 	properties, err := s.AppService.ListPropertiesByCategory(ctx, query.ListPropertiesByCategoryQuery{
 		Server:          "Test",
@@ -196,7 +196,61 @@ func (s *MyPropertyService) ListPropertyByCategory(ctx context.Context, req *pro
 			PaginationToken: property.PaginationToken,
 		})
 	}
-	return &proto.ListPropertyByCategoryResponse{
+	return &proto.ListPropertyResponse{
+		Properties: propertyList,
+	}, nil
+}
+
+func (s *MyPropertyService) ListPropertyByOwner(ctx context.Context, req *proto.PropertyListByOwnerRequest) (*proto.ListPropertyResponse, error) {
+	s.AppService.Log.Debug("Listing properties by owner")
+	properties, err := s.AppService.ListPropertiesByOwner(ctx, query.ListPropertiesByOwnerQuery{
+		Server:          "Test",
+		Owner:           req.OwnerID,
+		Sort:            uint8(req.Sort),
+		Limit:           uint16(req.Limit),
+		PaginationToken: req.PaginationToken,
+		Search:          uint8(req.Search),
+	})
+	if err != nil {
+		s.AppService.Log.Error("Failed to list properties by owner", err)
+		return nil, err
+	}
+	s.AppService.Log.Debug("Properties by owner listed successfully")
+	var propertyList []*proto.Property
+	for _, property := range properties.Properties {
+		var latitude *float32
+		var longitude *float32
+
+		if property.Address.GeoJSON != nil {
+			lat := float32(property.Address.GeoJSON.Coordinates[0])
+			lng := float32(property.Address.GeoJSON.Coordinates[1])
+			latitude = &lat
+			longitude = &lng
+		}
+		s.AppService.Log.Debug("Converting property to proto format: %s", property.ID)
+		propertyList = append(propertyList, &proto.Property{
+			Id:      property.ID,
+			OwnerID: property.OwnerID,
+			Address: &proto.Address{
+				FirstLine: property.Address.FirstLine,
+				Street:    property.Address.Street,
+				City:      property.Address.City,
+				County:    property.Address.County,
+				Country:   property.Address.Country,
+				Postcode:  property.Address.PostalCode,
+				Latitude:  latitude,
+				Longitude: longitude,
+			},
+			Description:     property.Description,
+			Title:           property.Title,
+			AvailableDate:   timestamppb.New(property.AvailableDate),
+			Available:       wrapperspb.Bool(property.Available),
+			SaleType:        uint32(property.SaleType),
+			Category:        property.Category,
+			PaginationToken: property.PaginationToken,
+		})
+	}
+	return &proto.ListPropertyResponse{
 		Properties: propertyList,
 	}, nil
 }

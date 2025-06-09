@@ -222,3 +222,68 @@ func (p *PropertyRepositoryMongoImpl) ListByCategory(
 	}
 	return *finalRes, nil
 }
+
+func (p *PropertyRepositoryMongoImpl) ListByOwner(
+	c context.Context,
+	server string,
+	ownerID string,
+	sort uint8,
+	limit uint16,
+	paginationToken string,
+	search uint8,
+) ([]property.Property, error) {
+	sortSpec := bson.D{
+		{Key: "Title", Value: sort},
+	}
+	filter, err := p.paginationHelper.TextPaginationHelper(
+		"default",
+		"OwnerID",
+		ownerID,
+		sortSpec,
+		search,
+		paginationToken,
+	)
+	if err != nil {
+		return nil, errors.NewHandlerError(
+			err,
+			codes.Internal,
+		)
+	}
+
+	res, aggErr := p.aggregator.Aggregate(
+		c,
+		server,
+		mongo.Pipeline{
+			filter,
+			bson.D{{Key: "$limit", Value: limit}},
+			bson.D{{Key: "$project", Value: bson.D{
+				{Key: "_id", Value: 1},
+				{Key: "OwnerID", Value: 1},
+				{Key: "Description", Value: 1},
+				{Key: "Title", Value: 1},
+				{Key: "Category", Value: 1},
+				{Key: "Available", Value: 1},
+				{Key: "AvailableDate", Value: 1},
+				{Key: "Address", Value: 1},
+				{Key: "SaleType", Value: 1},
+				{Key: "PaginationToken", Value: bson.D{{Key: "$meta", Value: "searchSequenceToken"}}},
+			}}}},
+	)
+	if aggErr != nil {
+		p.log.Debug("Error in aggregation: %v", aggErr)
+		return nil, errors.NewHandlerError(
+			aggErr,
+			codes.Internal,
+		)
+	}
+
+	finalRes, getErr := res.GetAll(c)
+	if getErr != nil {
+		p.log.Debug("Error in getting all results: %v", getErr)
+		return nil, errors.NewHandlerError(
+			getErr,
+			codes.Internal,
+		)
+	}
+	return *finalRes, nil
+}

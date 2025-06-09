@@ -24,4 +24,14 @@ type Repository interface {
 		paginationToken string,
 		search uint8,
 	) ([]Property, error)
+
+	ListByOwner(
+		c context.Context,
+		server string,
+		ownerID string,
+		sort uint8,
+		limit uint16,
+		paginationToken string,
+		search uint8,
+	) ([]Property, error)
 }

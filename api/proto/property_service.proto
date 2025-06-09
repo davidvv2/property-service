@@ -8,6 +8,31 @@ import "google/protobuf/wrappers.proto";
 import "google/api/annotations.proto";
 
 
+message Property {
+    string id = 1;
+    string category = 2;
+    string description = 3;
+    string ownerID = 4;
+    string title = 5;
+    google.protobuf.BoolValue available = 6;
+    google.protobuf.Timestamp available_date = 7;
+    optional Address address = 8;
+    uint32 sale_type = 9;
+    string pagination_token = 10; // Token for pagination, if applicable.
+}
+
+
+message Address {
+    string first_line = 1;
+    string street = 2;
+    string city = 3;
+    string county = 4;
+    string country = 5;
+    string postcode = 6;
+    optional float latitude = 7;
+    optional float longitude = 8;
+}
+
 // Request and Response messages for the Create operation.
 message CreatePropertyRequest {
     string category = 1;
@@ -54,42 +79,23 @@ message DeletePropertyResponse {
     string id = 1;
 }
 
-
-message Property {
-    string id = 1;
-    string category = 2;
-    string description = 3;
-    string ownerID = 4;
-    string title = 5;
-    google.protobuf.BoolValue available = 6;
-    google.protobuf.Timestamp available_date = 7;
-    optional Address address = 8;
-    uint32 sale_type = 9;
-    string pagination_token = 10; // Token for pagination, if applicable.
-}
-
-
-message Address {
-    string first_line = 1;
-    string street = 2;
-    string city = 3;
-    string county = 4;
-    string country = 5;
-    string postcode = 6;
-    optional float latitude = 7;
-    optional float longitude = 8;
-}
-
-
 message PropertyListByCategoryRequest {
-    string category = 2;           // The category to filter properties.
-    uint32 sort = 3;               // Sort flag/direction.
-    uint32 search = 4;             // 0 = no token, 1 = searchAfter, 2 = searchBefore.
-    uint32 limit = 5;              // Maximum number of properties to return.
-    string paginationToken = 6;    // Pagination token from previous request (optional).
+    string category = 1;           // The category to filter properties.
+    uint32 sort = 2;               // Sort flag/direction.
+    uint32 search = 3;             // 0 = no token, 1 = searchAfter, 2 = searchBefore.
+    uint32 limit = 4;              // Maximum number of properties to return.
+    string paginationToken = 5;    // Pagination token from previous request (optional).
 }
 
-message ListPropertyByCategoryResponse {
+message PropertyListByOwnerRequest {
+    string ownerID = 1;           // The ownerID to filter properties.
+    uint32 sort = 2;               // Sort flag/direction.
+    uint32 search = 3;             // 0 = no token, 1 = searchAfter, 2 = searchBefore.
+    uint32 limit = 4;              // Maximum number of properties to return.
+    string paginationToken = 5;    // Pagination token from previous request (optional).
+}
+
+message ListPropertyResponse {
     repeated Property properties = 1;
 }
 
@@ -117,9 +123,14 @@ service PropertyService {
             delete: "/v1/property/{id}"
         };
     }
-    rpc ListPropertyByCategory(PropertyListByCategoryRequest) returns (ListPropertyByCategoryResponse) {
+    rpc ListPropertyByCategory(PropertyListByCategoryRequest) returns (ListPropertyResponse) {
         option (google.api.http) = {
             get: "/v1/property"
+        };
+    }
+    rpc ListPropertyByOwner(PropertyListByOwnerRequest) returns (ListPropertyResponse) {
+        option (google.api.http) = {
+            get: "/v1/property/{ownerID}"
         };
     }
 }

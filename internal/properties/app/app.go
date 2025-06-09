@@ -31,4 +31,5 @@ type Queries struct {
 	GetProperty              query.GetPropertyHandler
 	GetOwner                 query.GetOwnerHandler
 	ListPropertiesByCategory query.ListPropertiesByCategoryHandler
+	ListPropertiesByOwner    query.ListPropertiesByOwnerHandler
 }
