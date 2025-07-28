@@ -14,8 +14,7 @@ import (
 
 // GetPropertyQuery : This is used to retrieve a property model.
 type GetPropertyQuery struct {
-	ID     string `validate:"required"`
-	Server string `validate:"required"`
+	ID string `validate:"required"`
 }
 
 // GetPropertyHandler is a CQRS endpoint that handles a query to retrieve a property's information.
@@ -51,7 +50,7 @@ func NewGetPropertyHandler(
 // Handler method takes a context and returns a property model and an error.
 func (guh GetPropertyHandlerImpl) Handle(c context.Context, cmd GetPropertyQuery,
 ) (*property.Property, error) {
-	property, err := guh.repository.Get(c, cmd.Server, cmd.ID)
+	property, err := guh.repository.Get(c, cmd.ID)
 	if err != nil {
 		return nil, errors.NewHandlerError(
 			err,

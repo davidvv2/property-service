@@ -8,12 +8,12 @@ import (
 	"property-service/pkg/infrastructure/log"
 
 	"github.com/go-playground/validator/v10"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/google/uuid"
 )
 
 type factories struct {
-	Property property.Factory[primitive.ObjectID]
-	Owner    owner.Factory[primitive.ObjectID]
+	Property property.Factory[uuid.UUID]
+	Owner    owner.Factory[uuid.UUID]
 }
 
 func createFactories(

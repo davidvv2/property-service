@@ -39,7 +39,6 @@ func (s *DeleteOwnerTestSuite) SetupSuite() {
 	)
 	s.params = command.DeleteOwnerCommand{
 		OwnerID: database.NewStringID(),
-		Server:  "Test",
 	}
 
 }
@@ -47,7 +46,6 @@ func (s *DeleteOwnerTestSuite) SetupSuite() {
 func (s *DeleteOwnerTestSuite) SetupTest() {
 	owner, err := s.ServiceDep.Repo.OwnerRepository.New(
 		s.ctx,
-		s.params.Server,
 		owner.NewOwnerParams{
 			ID:        s.params.OwnerID,
 			Name:      "John Doe",

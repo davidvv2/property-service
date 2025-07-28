@@ -21,7 +21,6 @@ func (s *MyOwnerService) CreateOwner(ctx context.Context, req *proto.CreateOwner
 		Name:      req.Name,
 		Email:     req.Email,
 		Telephone: req.Telephone,
-		Server:    "Test",
 	})
 	if err != nil {
 		s.AppService.Log.Error("Failed to create owner", err)
@@ -37,8 +36,7 @@ func (s *MyOwnerService) CreateOwner(ctx context.Context, req *proto.CreateOwner
 func (s *MyOwnerService) ReadOwner(ctx context.Context, req *proto.ReadOwnerRequest) (*proto.ReadOwnerResponse, error) {
 	s.AppService.Log.Debug("Reading owner with ID:", req.Id)
 	owner, err := s.AppService.GetOwner(ctx, query.GetOwnerQuery{
-		ID:     req.Id,
-		Server: "Test",
+		ID: req.Id,
 	})
 	if err != nil {
 		s.AppService.Log.Error("Failed to read owner", err)
@@ -61,7 +59,6 @@ func (s *MyOwnerService) UpdateOwner(ctx context.Context, req *proto.UpdateOwner
 		Name:      req.Name,
 		Email:     req.Email,
 		Telephone: req.Telephone,
-		Server:    "Test",
 	})
 	if err != nil {
 		s.AppService.Log.Error("Failed to update owner", err)
@@ -78,7 +75,6 @@ func (s *MyOwnerService) DeleteOwner(ctx context.Context, req *proto.DeleteOwner
 	s.AppService.Log.Debug("Deleting owner with ID:", req.Id)
 	err := s.AppService.DeleteOwner(ctx, command.DeleteOwnerCommand{
 		OwnerID: req.Id,
-		Server:  "Test",
 	})
 	if err != nil {
 		s.AppService.Log.Error("Failed to delete owner", err)

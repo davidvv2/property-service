@@ -15,30 +15,30 @@ import (
 var _ Remover[bson.M] = (*RemoverMongoImpl[bson.M])(nil)
 
 type RemoverMongoImpl[Filter bson.M] struct {
-	log              log.Logger
-	connector        Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection]
-	collectionSuffix string
+	log        log.Logger
+	connector  Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection]
+	collection string
 }
 
 func NewMongoRemover(
 	log log.Logger,
 	connector Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection],
-	collectionSuffix string,
+	collection string,
 ) *RemoverMongoImpl[bson.M] {
 	return &RemoverMongoImpl[bson.M]{
-		log:              log,
-		connector:        connector,
-		collectionSuffix: collectionSuffix,
+		log:        log,
+		connector:  connector,
+		collection: collection,
 	}
 }
 
 func (rmi *RemoverMongoImpl[Filter]) DeleteOne(
-	c context.Context, server string, filter Filter,
+	c context.Context, filter Filter,
 ) (int64, error) {
 	// Check if the collection exists in the map of collections
-	collection, collectionErr := rmi.connector.GetCollection(server + rmi.collectionSuffix)
+	collection, collectionErr := rmi.connector.GetCollection(rmi.collection)
 	if collectionErr != nil {
-		rmi.log.Error("Collection not found %s", server+rmi.collectionSuffix)
+		rmi.log.Error("Collection not found %s", rmi.collection)
 		return 0, errors.ErrCollectionNotFound
 	}
 	// Delete the item by the filer.
@@ -50,7 +50,7 @@ func (rmi *RemoverMongoImpl[Filter]) DeleteOne(
 }
 
 func (rmi *RemoverMongoImpl[Filter]) DeleteOneByID(
-	c context.Context, server string, id string,
+	c context.Context, id string,
 ) (int64, error) {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -59,5 +59,5 @@ func (rmi *RemoverMongoImpl[Filter]) DeleteOneByID(
 			codes.Internal,
 		)
 	}
-	return rmi.DeleteOne(c, server, Filter(bson.M{"_id": oid}))
+	return rmi.DeleteOne(c, Filter(bson.M{"_id": oid}))
 }

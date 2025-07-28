@@ -8,5 +8,5 @@ type EncrypterOperator[
 	DomainModel any,
 ] interface {
 	Encrypter[EncryptData, EncryptedData]
-	InsertDocument(c context.Context, server, key string, data DomainModel) (string, error)
+	InsertDocument(c context.Context, key string, data DomainModel) (string, error)
 }

@@ -59,4 +59,4 @@ The module includes comprehensive tests within the `app/command` and `app/query`
 
 ## Contributing
 
-Contributions to this module should follow Domain-Driven Design practices and aim to maintain a clear separation between business logic, infrastructure, and presentation layers. Please ensure that new functionality is accompanied by corresponding tests.
+Contributions to this module should follow Domain-Driven Design practices and aim to maintain a clear separation between business logic, infrastructure, and presentation layers.

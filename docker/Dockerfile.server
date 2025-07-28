@@ -23,6 +23,7 @@ WORKDIR /root/
 
 # install cse runtime and other libs
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y \
       libmongocrypt0 \
       libssl3 \

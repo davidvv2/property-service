@@ -15,7 +15,6 @@ import (
 // DeletePropertyCommand : This is the delete property request in a struct format.
 type DeletePropertyCommand struct {
 	PropertyID string `validate:"required"`
-	Server     string `validate:"required"`
 }
 
 // DeletePropertyHandler is a CQRS endpoint that handles a command to delete a property.
@@ -56,7 +55,6 @@ func (cph DeletePropertyHandlerImpl) Handle(
 ) error {
 	if registerErr := cph.repository.Delete(
 		c,
-		cmd.Server,
 		cmd.PropertyID,
 	); registerErr != nil {
 		return errors.NewHandlerError(

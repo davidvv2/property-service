@@ -18,7 +18,6 @@ type UpdateOwnerCommand struct {
 	Name      string
 	Email     string
 	Telephone string
-	Server    string `validate:"required"`
 }
 
 // UpdateOwnerHandler is a CQRS endpoint that handles a command to update an owner's information.
@@ -59,7 +58,6 @@ func (cph UpdateOwnerHandlerImpl) Handle(
 ) error {
 	if registerErr := cph.repository.Update(
 		c,
-		cmd.Server,
 		cmd.OwnerID,
 		owner.UpdateOwnerParams{
 			Telephone: cmd.Telephone,

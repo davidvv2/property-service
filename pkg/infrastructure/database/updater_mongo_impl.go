@@ -31,31 +31,31 @@ type UpdaterMongoImpl[
 		mongo.ClientEncryption,
 		mongo.Collection,
 	]
-	collectionSuffix string
+	collection string
 }
 
 func NewMongoUpdater[DomainModel, DatabaseModel any](
 	log log.Logger,
 	factory factory.Factory[DomainModel, DatabaseModel],
 	connector Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection],
-	collectionSuffix string,
+	collection string,
 ) *UpdaterMongoImpl[bson.M, bson.M, DomainModel, DatabaseModel] {
 	return &UpdaterMongoImpl[
 		bson.M, bson.M, DomainModel, DatabaseModel]{
-		log:              log,
-		factory:          factory,
-		connector:        connector,
-		collectionSuffix: collectionSuffix,
+		log:        log,
+		factory:    factory,
+		connector:  connector,
+		collection: collection,
 	}
 }
 
 func (fmi *UpdaterMongoImpl[Filter, Partial, DomainModel, DatabaseModel]) UpdateOne(
-	c context.Context, server string, filter Filter, data Partial,
+	c context.Context, filter Filter, data Partial,
 ) error {
 	fmi.log.Info("filter %+v data %+v", bson.M(filter), data)
 
 	collection, err := fmi.connector.GetCollection(
-		server + fmi.collectionSuffix,
+		fmi.collection,
 	)
 	if err != nil {
 		return err
@@ -69,7 +69,7 @@ func (fmi *UpdaterMongoImpl[Filter, Partial, DomainModel, DatabaseModel]) Update
 }
 
 func (fmi *UpdaterMongoImpl[Filter, Partial, DomainModel, DatabaseModel]) UpdateOneByID(
-	c context.Context, server string, id string, data Partial,
+	c context.Context, id string, data Partial,
 ) error {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -81,7 +81,6 @@ func (fmi *UpdaterMongoImpl[Filter, Partial, DomainModel, DatabaseModel]) Update
 	}
 	return fmi.UpdateOne(
 		c,
-		server,
 		Filter(bson.M{
 			"_id": oid,
 		}),
@@ -92,9 +91,9 @@ func (fmi *UpdaterMongoImpl[Filter, Partial, DomainModel, DatabaseModel]) Update
 func (fmi *UpdaterMongoImpl[
 	Filter, Partial, DomainModel, DatabaseModel,
 ]) ReplaceOne(
-	c context.Context, collections string, filter Filter, data DomainModel,
+	c context.Context, filter Filter, data DomainModel,
 ) (string, error) {
-	collection, err := fmi.connector.GetCollection(collections)
+	collection, err := fmi.connector.GetCollection(fmi.collection)
 	if err != nil {
 		return "", err
 	}
@@ -125,12 +124,12 @@ func (fmi *UpdaterMongoImpl[
 	DatabaseModel,
 ]) UpdateAndFind(
 	c context.Context,
-	server string,
+
 	filter Filter,
 	data Partial,
 ) (*DomainModel, error) {
 	collection, err := fmi.connector.GetCollection(
-		server + fmi.collectionSuffix,
+		fmi.collection,
 	)
 	if err != nil {
 		return nil, err

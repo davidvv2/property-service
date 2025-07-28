@@ -14,34 +14,34 @@ import (
 var _ Inserter[any] = (*InserterMongoImpl[any, any])(nil)
 
 type InserterMongoImpl[DatabaseModel, DomainModel any] struct {
-	log              log.Logger
-	connector        Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection]
-	factory          factory.Factory[DomainModel, DatabaseModel]
-	collectionSuffix string
+	log        log.Logger
+	connector  Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection]
+	factory    factory.Factory[DomainModel, DatabaseModel]
+	collection string
 }
 
 func NewMongoInserter[DatabaseModel, DomainModel any](
 	log log.Logger,
-	collectionSuffix string,
+	collection string,
 	factory factory.Factory[DomainModel, DatabaseModel],
 	connector Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection],
 ) *InserterMongoImpl[DatabaseModel, DomainModel] {
 	return &InserterMongoImpl[DatabaseModel, DomainModel]{
-		log:              log,
-		factory:          factory,
-		connector:        connector,
-		collectionSuffix: collectionSuffix,
+		log:        log,
+		factory:    factory,
+		connector:  connector,
+		collection: collection,
 	}
 }
 
 // InsertOne: This will insert one document of type DomainModel and return the id string or a error if one is returned.
 func (imi *InserterMongoImpl[DatabaseModel, DomainModel]) InsertOne(
-	c context.Context, server string, data DomainModel,
+	c context.Context, data DomainModel,
 ) (string, error) {
 	// Check if the collection exists in the map of collections
-	collection, collectionErr := imi.connector.GetCollection(server + imi.collectionSuffix)
+	collection, collectionErr := imi.connector.GetCollection(imi.collection)
 	if collectionErr != nil {
-		imi.log.Error("Collection not found %s", server+imi.collectionSuffix)
+		imi.log.Error("Collection not found %s", imi.collection)
 		return "", errors.ErrCollectionNotFound
 	}
 
@@ -55,12 +55,12 @@ func (imi *InserterMongoImpl[DatabaseModel, DomainModel]) InsertOne(
 	// Insert the document into the collection.
 	res, insertErr := collection.InsertOne(c, database)
 	if insertErr != nil {
-		imi.log.Error("Error While inserting %+v", server+imi.collectionSuffix)
+		imi.log.Error("Error While inserting %+v", imi.collection)
 		return "", insertErr
 	}
 	// Debug log the output.
 	imi.log.Debug("Collection: %s Successfully Inserted into Document : %+v with id %+v",
-		server+imi.collectionSuffix, data, res.InsertedID)
+		imi.collection, data, res.InsertedID)
 	// Return the resulting ID.
 	return res.InsertedID.(primitive.ObjectID).Hex(), nil
 }

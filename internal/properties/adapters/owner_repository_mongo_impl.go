@@ -10,6 +10,7 @@ import (
 	"property-service/pkg/infrastructure/database"
 	"property-service/pkg/infrastructure/log"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -32,13 +33,13 @@ type OwnerRepositoryMongoImpl struct {
 		options.FindOptions,
 		bson.M,
 	]
-	factory owner.Factory[primitive.ObjectID]
+	factory owner.Factory[uuid.UUID]
 }
 
 func NewMongoOwnerRepository(
 	log log.Logger,
 	owner database.FinderInserterUpdaterRemover[bson.M, bson.M, owner.Owner],
-	factory owner.Factory[primitive.ObjectID],
+	factory owner.Factory[uuid.UUID],
 ) *OwnerRepositoryMongoImpl {
 	return &OwnerRepositoryMongoImpl{
 		log:         log,
@@ -50,7 +51,6 @@ func NewMongoOwnerRepository(
 
 func (p *OwnerRepositoryMongoImpl) New(
 	ctx context.Context,
-	server string,
 	ownerParams owner.NewOwnerParams,
 ) (*owner.Owner, error) {
 	p.log.Debug("Creating new owner")
@@ -65,7 +65,7 @@ func (p *OwnerRepositoryMongoImpl) New(
 	}
 
 	// Insert the new owner into the database
-	if _, err := p.owner.InsertOne(ctx, server, *newOwner); err != nil {
+	if _, err := p.owner.InsertOne(ctx, *newOwner); err != nil {
 		return nil, errors.NewHandlerError(
 			err,
 			codes.Internal,
@@ -76,9 +76,9 @@ func (p *OwnerRepositoryMongoImpl) New(
 }
 
 // Delete implements owner.Repository.
-func (p *OwnerRepositoryMongoImpl) Delete(c context.Context, server string, ID string) error {
+func (p *OwnerRepositoryMongoImpl) Delete(c context.Context, ID string) error {
 	p.log.Debug("Deleting owner with ID: %s", ID)
-	count, err := p.owner.DeleteOneByID(c, server, ID)
+	count, err := p.owner.DeleteOneByID(c, ID)
 	if err != nil {
 		return errors.NewHandlerError(
 			err,
@@ -95,10 +95,10 @@ func (p *OwnerRepositoryMongoImpl) Delete(c context.Context, server string, ID s
 }
 
 // Get implements owner.Repository.
-func (p *OwnerRepositoryMongoImpl) Get(c context.Context, server string, ID string) (*owner.Owner, error) {
+func (p *OwnerRepositoryMongoImpl) Get(c context.Context, ID string) (*owner.Owner, error) {
 	// TODO: Implement fetching a owner by ID from MongoDB.
 	p.log.Debug("Fetching owner with ID: %s", ID)
-	prop, getErr := p.owner.FindByID(c, server, ID)
+	prop, getErr := p.owner.FindByID(c, ID)
 	if getErr != nil {
 		return nil, errors.NewHandlerError(
 			getErr,
@@ -109,7 +109,7 @@ func (p *OwnerRepositoryMongoImpl) Get(c context.Context, server string, ID stri
 }
 
 // Update implements owner.Repository.
-func (p *OwnerRepositoryMongoImpl) Update(c context.Context, server string, id string, params owner.UpdateOwnerParams) error {
+func (p *OwnerRepositoryMongoImpl) Update(c context.Context, id string, params owner.UpdateOwnerParams) error {
 	p.log.Debug("Updating owner with ID: %s", id)
 
 	updateData := bson.M{}
@@ -132,7 +132,7 @@ func (p *OwnerRepositoryMongoImpl) Update(c context.Context, server string, id s
 		"$set": updateData,
 	}
 
-	err := p.owner.UpdateOneByID(c, server, id, updateFields)
+	err := p.owner.UpdateOneByID(c, id, updateFields)
 	if err != nil {
 		return errors.NewHandlerError(
 			err,

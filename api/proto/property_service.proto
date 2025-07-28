@@ -35,14 +35,15 @@ message Address {
 
 // Request and Response messages for the Create operation.
 message CreatePropertyRequest {
-    string category = 1;
-    string description = 2;
-    string ownerID = 3;
-    string title = 4;
-    bool available = 5;
-    google.protobuf.Timestamp available_date = 6;
-    Address address = 7;
-    uint32 sale_type = 8;
+    string id = 1;
+    string category = 2;
+    string description = 3;
+    string ownerID = 4;
+    string title = 5;
+    bool available = 6;
+    google.protobuf.Timestamp available_date = 7;
+    Address address = 8;
+    uint32 sale_type = 9;
 }
 
 message CreatePropertyResponse {

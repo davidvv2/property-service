@@ -58,7 +58,6 @@ func (guh ListPropertyByOwnerHandlerImpl) Handle(c context.Context, cmd ListProp
 ) (*ListPropertiesByOwnerResult, error) {
 	property, err := guh.repository.ListByOwner(
 		c,
-		cmd.Server,
 		cmd.Owner,
 		cmd.Sort,
 		cmd.Limit,

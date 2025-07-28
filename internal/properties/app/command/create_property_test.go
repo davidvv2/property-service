@@ -56,7 +56,6 @@ func (s *NewPropertyTestSuite) SetupTest() {
 		Available:     true,
 		AvailableDate: time.Now(),
 		SaleType:      1,
-		Server:        "Test",
 	}
 }
 
@@ -67,7 +66,7 @@ func (s *NewPropertyTestSuite) TestCreatePropertyHandler() {
 	s.NoError(err, "Expected no error when creating a property")
 
 	// Verify that the property was created successfully
-	property, err := s.ServiceDep.Repo.PropertyRepository.Get(s.ctx, s.params.Server, s.params.PropertyID)
+	property, err := s.ServiceDep.Repo.PropertyRepository.Get(s.ctx, s.params.PropertyID)
 	s.NoError(err, "Expected no error when finding the property")
 	s.NotNil(property, "Expected property to be found")
 	s.Equal(s.params.Title, property.Title, "Expected property title to match")

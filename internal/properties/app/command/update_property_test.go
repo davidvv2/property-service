@@ -62,7 +62,6 @@ func (s *UpdatePropertyTestSuite) SetupTest() {
 	// Create a property for testing
 	_, err := s.ServiceDep.Repo.PropertyRepository.New(
 		s.ctx,
-		s.params.Server,
 		property.NewPropertyParams{
 			PropertyID: s.params.PropertyID,
 			OwnerID:    database.NewStringID(),
@@ -94,7 +93,7 @@ func (s *UpdatePropertyTestSuite) TestUpdatePropertyHandler() {
 	s.NoError(err, "Expected no error when creating a property")
 
 	// Verify that the property was updated successfully
-	property, err := s.ServiceDep.Repo.PropertyRepository.Get(s.ctx, s.params.Server, s.params.PropertyID)
+	property, err := s.ServiceDep.Repo.PropertyRepository.Get(s.ctx, s.params.PropertyID)
 	s.NoError(err, "Expected no error when finding the property")
 	s.NotNil(property, "Expected property to be found")
 	s.Equal(s.params.Title, property.Title, "Expected property title to match")

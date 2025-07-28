@@ -41,7 +41,6 @@ func (s *DeletePropertyTestSuite) SetupSuite() {
 	)
 	s.params = command.DeletePropertyCommand{
 		PropertyID: database.NewStringID(),
-		Server:     "Test",
 	}
 
 }
@@ -49,7 +48,6 @@ func (s *DeletePropertyTestSuite) SetupSuite() {
 func (s *DeletePropertyTestSuite) SetupTest() {
 	prop, err := s.ServiceDep.Repo.PropertyRepository.New(
 		s.ctx,
-		s.params.Server,
 		property.NewPropertyParams{
 			PropertyID: s.params.PropertyID,
 			OwnerID:    database.NewStringID(),

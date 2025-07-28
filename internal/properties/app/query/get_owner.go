@@ -14,8 +14,7 @@ import (
 
 // GetOwnerQuery : This is used to retrieve the owner profile.
 type GetOwnerQuery struct {
-	ID     string `validate:"required"`
-	Server string `validate:"required"`
+	ID string `validate:"required"`
 }
 
 // GetOwnerHandler is a CQRS endpoint that handles a command to retrieve a owner's profile.
@@ -50,7 +49,7 @@ func NewGetOwnerHandler(
 // Handler method takes a context and returns an owner model and an error.
 func (guh getOwnerHandlerImpl) Handle(c context.Context, cmd GetOwnerQuery,
 ) (*owner.Owner, error) {
-	owner, err := guh.repository.Get(c, cmd.Server, cmd.ID)
+	owner, err := guh.repository.Get(c, cmd.ID)
 	if err != nil {
 		return nil, errors.NewHandlerError(
 			err,

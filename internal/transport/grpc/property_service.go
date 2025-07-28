@@ -8,7 +8,6 @@ import (
 	"property-service/internal/properties/app/query"
 	port "property-service/internal/properties/ports"
 	"property-service/pkg/address"
-	"property-service/pkg/infrastructure/database"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -22,9 +21,8 @@ type MyPropertyService struct {
 
 func (s *MyPropertyService) CreateProperty(ctx context.Context, req *proto.CreatePropertyRequest) (*proto.CreatePropertyResponse, error) {
 	s.AppService.Log.Debug("Creating new property")
-	newID := database.NewStringID()
 	err := s.AppService.CreateProperty(ctx, command.CreatePropertyCommand{
-		PropertyID: newID,
+		PropertyID: req.Id,
 		OwnerID:    req.OwnerID,
 		Address: address.Address{
 			FirstLine:  req.Address.FirstLine,
@@ -44,7 +42,6 @@ func (s *MyPropertyService) CreateProperty(ctx context.Context, req *proto.Creat
 		Available:     req.Available,
 		AvailableDate: req.AvailableDate.AsTime(),
 		SaleType:      uint8(req.SaleType),
-		Server:        "Test",
 	})
 	if err != nil {
 		s.AppService.Log.Error("Failed to create property", err)
@@ -53,44 +50,53 @@ func (s *MyPropertyService) CreateProperty(ctx context.Context, req *proto.Creat
 	s.AppService.Log.Debug("Property created successfully")
 	// Return the response
 	return &proto.CreatePropertyResponse{
-		Id: newID,
+		Id: req.Id,
 	}, nil
 }
 
 func (s *MyPropertyService) ReadProperty(ctx context.Context, req *proto.ReadPropertyRequest) (*proto.Property, error) {
-	s.AppService.Log.Debug("Reading property with ID:", req.Id)
+	s.AppService.Log.Debug("Reading property with ID:%s", req.Id)
 	property, err := s.AppService.GetProperty(ctx, query.GetPropertyQuery{
-		ID:     req.Id,
-		Server: "Test",
+		ID: req.Id,
 	})
 	if err != nil {
 		s.AppService.Log.Error("Failed to read property", err)
 		return nil, err
 	}
 	s.AppService.Log.Debug("Property read successfully:", property)
-	new_coordinates := property.Address.GeoJSON.Coordinates
-	// Return the response
+	var latitude *float32
+	var longitude *float32
+	if property.Address.GeoJSON != nil {
+		coords := property.Address.GeoJSON.Coordinates
+		if len(coords) == 2 {
+			// note: GeoJSON.Coordinates is [lng, lat]
+			long := float32(coords[0])
+			lat := float32(coords[1])
+			latitude = &lat
+			longitude = &long
+		}
+	}
+
 	return &proto.Property{
-			Id:      req.Id,
-			OwnerID: property.OwnerID,
-			Address: &proto.Address{
-				FirstLine: property.Address.FirstLine,
-				Street:    property.Address.Street,
-				City:      property.Address.City,
-				County:    property.Address.County,
-				Country:   property.Address.Country,
-				Postcode:  property.Address.PostalCode,
-				Latitude:  func(f float32) *float32 { return &f }(float32(new_coordinates[0])),
-				Longitude: func(f float32) *float32 { return &f }(float32(new_coordinates[1])),
-			},
-			Description:   property.Description,
-			Title:         property.Title,
-			AvailableDate: timestamppb.New(property.AvailableDate),
-			Available:     wrapperspb.Bool(property.Available),
-			SaleType:      uint32(property.SaleType),
-			Category:      property.Category,
+		Id:      property.ID,
+		OwnerID: property.OwnerID,
+		Address: &proto.Address{
+			FirstLine: property.Address.FirstLine,
+			Street:    property.Address.Street,
+			City:      property.Address.City,
+			County:    property.Address.County,
+			Country:   property.Address.Country,
+			Postcode:  property.Address.PostalCode,
+			Latitude:  latitude,
+			Longitude: longitude,
 		},
-		nil
+		Description:   property.Description,
+		Title:         property.Title,
+		AvailableDate: timestamppb.New(property.AvailableDate),
+		Available:     wrapperspb.Bool(property.Available),
+		SaleType:      uint32(property.SaleType),
+		Category:      property.Category,
+	}, nil
 }
 
 func (s *MyPropertyService) UpdateProperty(ctx context.Context, req *proto.UpdatePropertyRequest) (*proto.UpdatePropertyResponse, error) {
@@ -132,7 +138,6 @@ func (s *MyPropertyService) DeleteProperty(ctx context.Context, req *proto.Delet
 	s.AppService.Log.Debug("Deleting property with ID:", req.Id)
 	err := s.AppService.DeleteProperty(ctx, command.DeletePropertyCommand{
 		PropertyID: req.Id,
-		Server:     "Test",
 	})
 	if err != nil {
 		s.AppService.Log.Error("Failed to delete property", err)
@@ -148,7 +153,6 @@ func (s *MyPropertyService) DeleteProperty(ctx context.Context, req *proto.Delet
 func (s *MyPropertyService) ListPropertyByCategory(ctx context.Context, req *proto.PropertyListByCategoryRequest) (*proto.ListPropertyResponse, error) {
 	s.AppService.Log.Debug("Listing properties")
 	properties, err := s.AppService.ListPropertiesByCategory(ctx, query.ListPropertiesByCategoryQuery{
-		Server:          "Test",
 		Category:        req.Category,
 		Sort:            uint8(req.Sort),
 		Limit:           uint16(req.Limit),

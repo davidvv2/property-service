@@ -38,8 +38,7 @@ func (s *GetOwnerTestSuite) SetupSuite() {
 		s.validator,
 	)
 	s.params = query.GetOwnerQuery{
-		ID:     database.NewStringID(),
-		Server: "Test",
+		ID: database.NewStringID(),
 	}
 
 	s.newParams = owner.NewOwnerParams{
@@ -51,7 +50,6 @@ func (s *GetOwnerTestSuite) SetupSuite() {
 	// Create an owner for testing
 	_, err := s.ServiceDep.Repo.OwnerRepository.New(
 		s.ctx,
-		s.params.Server,
 		s.newParams,
 	)
 	if err != nil {
@@ -72,7 +70,7 @@ func (s *GetOwnerTestSuite) TestGetOwnerHandler() {
 
 func (s *GetOwnerTestSuite) TearDownSuite() {
 	// Clean up the test data
-	if err := s.ServiceDep.Repo.OwnerRepository.Delete(s.ctx, s.params.Server, s.params.ID); err != nil {
+	if err := s.ServiceDep.Repo.OwnerRepository.Delete(s.ctx, s.params.ID); err != nil {
 		s.log.Error("Failed to delete test owner: %v", err)
 	}
 }

@@ -25,7 +25,6 @@ type CreatePropertyCommand struct {
 	AvailableDate time.Time       `validate:"required"`
 	Address       address.Address `validate:"required"`
 	SaleType      uint8           `validate:"required"`
-	Server        string          `validate:"required"`
 }
 
 // CreatePropertyHandler is a CQRS endpoint that handles a command to create a property.
@@ -66,7 +65,6 @@ func (cph CreatePropertyHandlerImpl) Handle(
 ) error {
 	if _, registerErr := cph.repository.New(
 		c,
-		cmd.Server,
 		property.NewPropertyParams{
 			PropertyID:    cmd.PropertyID,
 			OwnerID:       cmd.OwnerID,

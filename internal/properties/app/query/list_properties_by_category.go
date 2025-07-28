@@ -19,7 +19,6 @@ type ListPropertiesByCategoryQuery struct {
 	Search          uint8  `validate:"omitempty"`
 	Limit           uint16 `validate:"required"`
 	PaginationToken string `validate:"omitempty"`
-	Server          string `validate:"required"`
 }
 
 // ListPropertiesByCategoryHandler is a CQRS endpoint that handles a command to retrieve a list of properties by category.
@@ -58,7 +57,6 @@ func (guh ListPropertyHandlerImpl) Handle(c context.Context, cmd ListPropertiesB
 ) (*ListPropertiesByCategoryResult, error) {
 	property, err := guh.repository.ListByCategory(
 		c,
-		cmd.Server,
 		cmd.Category,
 		cmd.Sort,
 		cmd.Limit,

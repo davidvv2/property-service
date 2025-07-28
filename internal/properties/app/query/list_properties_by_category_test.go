@@ -42,7 +42,6 @@ func (s *ListPropertiesByCategoryTestSuite) SetupSuite() {
 		Sort:     1,
 		Search:   1,
 		Limit:    2,
-		Server:   "Test",
 	}
 }
 

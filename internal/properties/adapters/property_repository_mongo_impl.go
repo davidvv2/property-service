@@ -9,8 +9,8 @@ import (
 	"property-service/pkg/infrastructure/database"
 	"property-service/pkg/infrastructure/log"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -33,14 +33,14 @@ type PropertyRepositoryMongoImpl struct {
 		bson.M,
 	]
 	paginationHelper database.PaginationHelper
-	factory          property.Factory[primitive.ObjectID]
+	factory          property.Factory[uuid.UUID]
 	aggregator       database.Grouper[mongo.Pipeline, property.Property]
 }
 
 func NewMongoPropertyRepository(
 	log log.Logger,
 	property database.FinderInserterUpdaterRemover[bson.M, bson.M, property.Property],
-	factory property.Factory[primitive.ObjectID],
+	factory property.Factory[uuid.UUID],
 	aggregator database.Grouper[mongo.Pipeline, property.Property],
 ) *PropertyRepositoryMongoImpl {
 	return &PropertyRepositoryMongoImpl{
@@ -55,7 +55,7 @@ func NewMongoPropertyRepository(
 
 func (p *PropertyRepositoryMongoImpl) New(
 	ctx context.Context,
-	server string,
+
 	propertyParams property.NewPropertyParams,
 ) (*property.Property, error) {
 	p.log.Debug("Creating new property")
@@ -70,7 +70,7 @@ func (p *PropertyRepositoryMongoImpl) New(
 	}
 
 	// Insert the new property into the database
-	if _, err := p.property.InsertOne(ctx, server, *newProperty); err != nil {
+	if _, err := p.property.InsertOne(ctx, *newProperty); err != nil {
 		return nil, errors.NewHandlerError(err,
 			codes.Internal,
 		)
@@ -80,9 +80,9 @@ func (p *PropertyRepositoryMongoImpl) New(
 }
 
 // Delete implements property.Repository.
-func (p *PropertyRepositoryMongoImpl) Delete(c context.Context, server string, ID string) error {
+func (p *PropertyRepositoryMongoImpl) Delete(c context.Context, ID string) error {
 	p.log.Debug("Deleting property with ID: %s", ID)
-	count, err := p.property.DeleteOneByID(c, server, ID)
+	count, err := p.property.DeleteOneByID(c, ID)
 	if err != nil {
 		return errors.NewHandlerError(err,
 			codes.Internal,
@@ -98,10 +98,10 @@ func (p *PropertyRepositoryMongoImpl) Delete(c context.Context, server string, I
 }
 
 // Get implements property.Repository.
-func (p *PropertyRepositoryMongoImpl) Get(c context.Context, server string, ID string) (*property.Property, error) {
+func (p *PropertyRepositoryMongoImpl) Get(c context.Context, ID string) (*property.Property, error) {
 	// TODO: Implement fetching a property by ID from MongoDB.
 	p.log.Debug("Fetching property with ID: %s", ID)
-	prop, getErr := p.property.FindByID(c, server, ID)
+	prop, getErr := p.property.FindByID(c, ID)
 	if getErr != nil {
 		return nil, errors.NewHandlerError(getErr,
 			codes.Internal,
@@ -113,7 +113,7 @@ func (p *PropertyRepositoryMongoImpl) Get(c context.Context, server string, ID s
 // Update implements property.Repository.
 func (p *PropertyRepositoryMongoImpl) Update(
 	c context.Context,
-	server string,
+
 	id string,
 	params property.UpdatePropertyParams,
 ) error {
@@ -146,7 +146,7 @@ func (p *PropertyRepositoryMongoImpl) Update(
 	updateFields := bson.M{
 		"$set": updateData,
 	}
-	err := p.property.UpdateOneByID(c, server, id, updateFields)
+	err := p.property.UpdateOneByID(c, id, updateFields)
 	if err != nil {
 		return errors.NewHandlerError(
 			err,
@@ -160,7 +160,7 @@ func (p *PropertyRepositoryMongoImpl) Update(
 // ListByCategory implements property.Repository.
 func (p *PropertyRepositoryMongoImpl) ListByCategory(
 	c context.Context,
-	server string,
+
 	category string,
 	sort uint8,
 	limit uint16,
@@ -187,7 +187,7 @@ func (p *PropertyRepositoryMongoImpl) ListByCategory(
 
 	res, aggErr := p.aggregator.Aggregate(
 		c,
-		server,
+
 		mongo.Pipeline{
 			filter,
 			bson.D{{Key: "$limit", Value: limit}},
@@ -225,7 +225,7 @@ func (p *PropertyRepositoryMongoImpl) ListByCategory(
 
 func (p *PropertyRepositoryMongoImpl) ListByOwner(
 	c context.Context,
-	server string,
+
 	ownerID string,
 	sort uint8,
 	limit uint16,
@@ -252,7 +252,7 @@ func (p *PropertyRepositoryMongoImpl) ListByOwner(
 
 	res, aggErr := p.aggregator.Aggregate(
 		c,
-		server,
+
 		mongo.Pipeline{
 			filter,
 			bson.D{{Key: "$limit", Value: limit}},

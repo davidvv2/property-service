@@ -15,32 +15,32 @@ var _ Grouper[mongo.Pipeline, any] = (*GrouperMongoImpl[
 ])(nil)
 
 type GrouperMongoImpl[Pipeline mongo.Pipeline, DomainModel, DatabaseModel any] struct {
-	log              log.Logger
-	factory          factory.Factory[DomainModel, DatabaseModel]
-	connector        Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection]
-	collectionSuffix string
+	log        log.Logger
+	factory    factory.Factory[DomainModel, DatabaseModel]
+	connector  Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection]
+	collection string
 }
 
 func NewMongoGrouper[DomainModel, DatabaseModel any](
 	log log.Logger,
 	factory factory.Factory[DomainModel, DatabaseModel],
 	connector Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection],
-	collectionSuffix string,
+	collection string,
 ) *GrouperMongoImpl[mongo.Pipeline, DomainModel, DatabaseModel] {
 	return &GrouperMongoImpl[mongo.Pipeline, DomainModel, DatabaseModel]{
-		log:              log,
-		factory:          factory,
-		connector:        connector,
-		collectionSuffix: collectionSuffix,
+		log:        log,
+		factory:    factory,
+		connector:  connector,
+		collection: collection,
 	}
 }
 
 func (
 	gmi *GrouperMongoImpl[Pipeline, DomainModel, DatabaseModel],
 ) Aggregate(
-	c context.Context, server string, pipeline Pipeline,
+	c context.Context, pipeline Pipeline,
 ) (Iterator[DomainModel], error) {
-	collection, collectionErr := gmi.connector.GetCollection(server + gmi.collectionSuffix)
+	collection, collectionErr := gmi.connector.GetCollection(gmi.collection)
 	if collectionErr != nil {
 		return nil, errors.ErrCollectionNotFound
 	}

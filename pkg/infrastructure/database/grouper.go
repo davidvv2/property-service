@@ -5,5 +5,5 @@ import (
 )
 
 type Grouper[Pipeline any, DomainModel any] interface {
-	Aggregate(c context.Context, server string, params Pipeline) (Iterator[DomainModel], error)
+	Aggregate(c context.Context, params Pipeline) (Iterator[DomainModel], error)
 }

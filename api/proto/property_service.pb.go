@@ -243,14 +243,15 @@ func (x *Address) GetLongitude() float32 {
 // Request and Response messages for the Create operation.
 type CreatePropertyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Category      string                 `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
-	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	OwnerID       string                 `protobuf:"bytes,3,opt,name=ownerID,proto3" json:"ownerID,omitempty"`
-	Title         string                 `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
-	Available     bool                   `protobuf:"varint,5,opt,name=available,proto3" json:"available,omitempty"`
-	AvailableDate *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=available_date,json=availableDate,proto3" json:"available_date,omitempty"`
-	Address       *Address               `protobuf:"bytes,7,opt,name=address,proto3" json:"address,omitempty"`
-	SaleType      uint32                 `protobuf:"varint,8,opt,name=sale_type,json=saleType,proto3" json:"sale_type,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Category      string                 `protobuf:"bytes,2,opt,name=category,proto3" json:"category,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	OwnerID       string                 `protobuf:"bytes,4,opt,name=ownerID,proto3" json:"ownerID,omitempty"`
+	Title         string                 `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
+	Available     bool                   `protobuf:"varint,6,opt,name=available,proto3" json:"available,omitempty"`
+	AvailableDate *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=available_date,json=availableDate,proto3" json:"available_date,omitempty"`
+	Address       *Address               `protobuf:"bytes,8,opt,name=address,proto3" json:"address,omitempty"`
+	SaleType      uint32                 `protobuf:"varint,9,opt,name=sale_type,json=saleType,proto3" json:"sale_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -283,6 +284,13 @@ func (x *CreatePropertyRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use CreatePropertyRequest.ProtoReflect.Descriptor instead.
 func (*CreatePropertyRequest) Descriptor() ([]byte, []int) {
 	return file_property_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CreatePropertyRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *CreatePropertyRequest) GetCategory() string {
@@ -891,16 +899,17 @@ const file_property_service_proto_rawDesc = "" +
 	"\tlongitude\x18\b \x01(\x02H\x01R\tlongitude\x88\x01\x01B\v\n" +
 	"\t_latitudeB\f\n" +
 	"\n" +
-	"_longitude\"\xb5\x02\n" +
-	"\x15CreatePropertyRequest\x12\x1a\n" +
-	"\bcategory\x18\x01 \x01(\tR\bcategory\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x18\n" +
-	"\aownerID\x18\x03 \x01(\tR\aownerID\x12\x14\n" +
-	"\x05title\x18\x04 \x01(\tR\x05title\x12\x1c\n" +
-	"\tavailable\x18\x05 \x01(\bR\tavailable\x12A\n" +
-	"\x0eavailable_date\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\ravailableDate\x120\n" +
-	"\aaddress\x18\a \x01(\v2\x16.mygrpcservice.AddressR\aaddress\x12\x1b\n" +
-	"\tsale_type\x18\b \x01(\rR\bsaleType\"(\n" +
+	"_longitude\"\xc5\x02\n" +
+	"\x15CreatePropertyRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
+	"\bcategory\x18\x02 \x01(\tR\bcategory\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x18\n" +
+	"\aownerID\x18\x04 \x01(\tR\aownerID\x12\x14\n" +
+	"\x05title\x18\x05 \x01(\tR\x05title\x12\x1c\n" +
+	"\tavailable\x18\x06 \x01(\bR\tavailable\x12A\n" +
+	"\x0eavailable_date\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\ravailableDate\x120\n" +
+	"\aaddress\x18\b \x01(\v2\x16.mygrpcservice.AddressR\aaddress\x12\x1b\n" +
+	"\tsale_type\x18\t \x01(\rR\bsaleType\"(\n" +
 	"\x16CreatePropertyResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"%\n" +
 	"\x13ReadPropertyRequest\x12\x0e\n" +

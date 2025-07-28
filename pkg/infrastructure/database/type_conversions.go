@@ -1,53 +1,33 @@
 package database
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"property-service/pkg/errors"
 
-// NewID creates a new ID from a string representation of a MongoDB ObjectId.
-func StringToID(idHex string) (primitive.ObjectID, error) {
-	id, err := primitive.ObjectIDFromHex(idHex)
+	"github.com/google/uuid"
+)
+
+func StringToID(idHex string) (uuid.UUID, error) {
+	id, err := uuid.Parse(idHex)
+
 	if err != nil {
-		return primitive.NilObjectID, err
+		return uuid.Nil, err
 	}
 	return id, nil
 }
 
-// IDToString :: Transforms a mongodb id primitive.objectID to a string.
-func IDToString(id primitive.ObjectID) (string, error) {
-	return id.Hex(), nil
-}
-
-// NewID :: Creates a new database ID.
-func NewID() primitive.ObjectID {
-	return primitive.NewObjectID()
-}
-
-// NewStringID :: Creates a new database string id.
-func NewStringID() string {
-	return primitive.NewObjectID().Hex()
-}
-
-// StringToBatchID Will return a list of lists of mongodb ids in the batch size defined constant.
-func StringToBatchID(stringID []string) ([][]primitive.ObjectID, error) {
-	lengthIDs := len(stringID)
-	// Create the batches of ids.
-	var databaseIDs = make([][]primitive.ObjectID, (lengthIDs/BatchSize)+1)
-	for i, dbIndex := 0, -1; i < lengthIDs; i++ {
-		// Allocate the array for each batch.
-		if i%BatchSize == 0 {
-			dbIndex++
-			switch {
-			case lengthIDs < BatchSize:
-				databaseIDs[dbIndex] = make([]primitive.ObjectID, lengthIDs)
-			default:
-				databaseIDs[dbIndex] = make([]primitive.ObjectID, BatchSize)
-			}
-		}
-		// Convert the id to a objectID.
-		oid, err := primitive.ObjectIDFromHex(stringID[i])
-		if err != nil {
-			return nil, err
-		}
-		databaseIDs[dbIndex][i-(dbIndex*BatchSize)] = oid
+func IDToString(id uuid.UUID) (string, error) {
+	newID := id.String()
+	if newID == "" {
+		return "", errors.New("failed to convert ID to string")
 	}
-	return databaseIDs, nil
+	return newID, nil
+}
+
+func NewID() uuid.UUID {
+	return uuid.New()
+}
+
+func NewStringID() string {
+	return uuid.New().String()
+
 }

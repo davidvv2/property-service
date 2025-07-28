@@ -15,7 +15,6 @@ import (
 // DeleteOwnerCommand : This is the delete owner request in a struct format.
 type DeleteOwnerCommand struct {
 	OwnerID string `validate:"required"`
-	Server  string `validate:"required"`
 }
 
 // DeleteOwnerHandler is a CQRS endpoint that handles a command to delete an owner.
@@ -56,7 +55,6 @@ func (cph DeleteOwnerHandlerImpl) Handle(
 ) error {
 	if registerErr := cph.repository.Delete(
 		c,
-		cmd.Server,
 		cmd.OwnerID,
 	); registerErr != nil {
 		return errors.NewHandlerError(

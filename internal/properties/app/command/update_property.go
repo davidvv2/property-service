@@ -64,7 +64,6 @@ func (cph UpdatePropertyHandlerImpl) Handle(
 ) error {
 	if registerErr := cph.repository.Update(
 		c,
-		cmd.Server,
 		cmd.PropertyID,
 		property.UpdatePropertyParams{
 			AvailableDate: cmd.AvailableDate,

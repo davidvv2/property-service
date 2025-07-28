@@ -32,11 +32,11 @@ type EncrypterOperatorMongoImpl[
 	DomainModel, DatabaseModel any] struct {
 	connector Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection]
 	Encrypter[EncryptData, EncryptedData]
-	inserter         Inserter[map[string]interface{}]
-	converter        structure.Converter[DomainModel]
-	log              log.Logger
-	encryptTags      map[string][]string
-	collectionSuffix string
+	inserter    Inserter[map[string]interface{}]
+	converter   structure.Converter[DomainModel]
+	log         log.Logger
+	encryptTags map[string][]string
+	collection  string
 }
 
 func NewMongoEncrypterOperator[DomainModel, DatabaseModel any](
@@ -44,12 +44,12 @@ func NewMongoEncrypterOperator[DomainModel, DatabaseModel any](
 	encrypter Encrypter[any, primitive.Binary],
 	converter structure.Converter[DomainModel],
 	log log.Logger,
-	collectionSuffix string,
+	collection string,
 ) *EncrypterOperatorMongoImpl[any, primitive.Binary, DomainModel, DatabaseModel] {
 	// Create a new inserter.
 	inserter := NewMongoInserter[map[string]interface{}]( //
 		log,
-		collectionSuffix,
+		collection,
 		newFakeFactory(),
 		connector,
 	)
@@ -72,18 +72,18 @@ func NewMongoEncrypterOperator[DomainModel, DatabaseModel any](
 	var strModel DomainModel
 	log.Info("created new mongodb encrypter operator for %T with encrypted fields %+v ", strModel, tag)
 	return &EncrypterOperatorMongoImpl[any, primitive.Binary, DomainModel, DatabaseModel]{
-		connector:        connector,
-		log:              log,
-		encryptTags:      tag,
-		Encrypter:        encrypter,
-		converter:        converter,
-		collectionSuffix: collectionSuffix,
-		inserter:         inserter,
+		connector:   connector,
+		log:         log,
+		encryptTags: tag,
+		Encrypter:   encrypter,
+		converter:   converter,
+		collection:  collection,
+		inserter:    inserter,
 	}
 }
 
 func (eomi EncrypterOperatorMongoImpl[EncryptData, EncryptedData, DomainModel, DatabaseModel],
-) InsertDocument(c context.Context, server, key string, data DomainModel) (string, error) {
+) InsertDocument(c context.Context, key string, data DomainModel) (string, error) {
 	// Create a new DEK for the alt key provided.
 	errCreatingDek := eomi.Encrypter.CreateDEK(c, key)
 
@@ -105,7 +105,7 @@ func (eomi EncrypterOperatorMongoImpl[EncryptData, EncryptedData, DomainModel, D
 		return "", err
 	}
 
-	res, err := eomi.inserter.InsertOne(c, server, bsonEncrypt)
+	res, err := eomi.inserter.InsertOne(c, bsonEncrypt)
 	if err != nil {
 		return "", errors.NewDatabaseError(err)
 	}

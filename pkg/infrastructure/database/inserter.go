@@ -5,5 +5,5 @@ import (
 )
 
 type Inserter[DomainModel any] interface {
-	InsertOne(c context.Context, server string, data DomainModel) (string, error)
+	InsertOne(c context.Context, data DomainModel) (string, error)
 }

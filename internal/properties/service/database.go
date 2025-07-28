@@ -8,6 +8,7 @@ import (
 	"property-service/pkg/infrastructure/log"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -22,15 +23,15 @@ const (
 
 type Property struct {
 	finder *database.FinderMongoImpl[
-		primitive.M, property.Property, property.Model[primitive.ObjectID],
+		primitive.M, property.Property, property.Model[uuid.UUID],
 	]
 	updater *database.UpdaterMongoImpl[
-		primitive.M, primitive.M, property.Property, property.Model[primitive.ObjectID],
+		primitive.M, primitive.M, property.Property, property.Model[uuid.UUID],
 	]
 	FinderUpdater database.FinderUpdater[
 		bson.M, bson.M, property.Property,
 	]
-	Inserter                      *database.InserterMongoImpl[property.Model[primitive.ObjectID], property.Property]
+	Inserter                      *database.InserterMongoImpl[property.Model[uuid.UUID], property.Property]
 	FinderInsterterUpdaterRemover database.FinderInserterUpdaterRemover[
 		bson.M, bson.M, property.Property,
 	]
@@ -85,15 +86,15 @@ func createProperty(
 
 type Owner struct {
 	finder *database.FinderMongoImpl[
-		primitive.M, owner.Owner, owner.Model[primitive.ObjectID],
+		primitive.M, owner.Owner, owner.Model[uuid.UUID],
 	]
 	updater *database.UpdaterMongoImpl[
-		primitive.M, primitive.M, owner.Owner, owner.Model[primitive.ObjectID],
+		primitive.M, primitive.M, owner.Owner, owner.Model[uuid.UUID],
 	]
 	FinderUpdater database.FinderUpdater[
 		bson.M, bson.M, owner.Owner,
 	]
-	Inserter                      *database.InserterMongoImpl[owner.Model[primitive.ObjectID], owner.Owner]
+	Inserter                      *database.InserterMongoImpl[owner.Model[uuid.UUID], owner.Owner]
 	FinderInsterterUpdaterRemover database.FinderInserterUpdaterRemover[
 		bson.M, bson.M, owner.Owner,
 	]

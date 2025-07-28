@@ -48,7 +48,6 @@ func (s *NewOwnerTestSuite) SetupTest() {
 		Name:      "John Doe",
 		Email:     "test@emails.com",
 		Telephone: "1234567890",
-		Server:    "Test",
 	}
 }
 
@@ -59,7 +58,7 @@ func (s *NewOwnerTestSuite) TestCreateOwnerHandler() {
 	s.NoError(err, "Expected no error when creating a owner")
 
 	// Verify that the owner was created successfully
-	owner, err := s.ServiceDep.Repo.OwnerRepository.Get(s.ctx, s.params.Server, s.params.OwnerID)
+	owner, err := s.ServiceDep.Repo.OwnerRepository.Get(s.ctx, s.params.OwnerID)
 	s.NoError(err, "Expected no error when finding the owner")
 	s.NotNil(owner, "Expected owner to be found")
 	s.Equal(s.params.Name, owner.Name(), "Expected owner name to match")
@@ -68,7 +67,7 @@ func (s *NewOwnerTestSuite) TestCreateOwnerHandler() {
 
 func (s *NewOwnerTestSuite) TearDownSuite() {
 	// Clean up the test data
-	if err := s.ServiceDep.Repo.OwnerRepository.Delete(s.ctx, s.params.Server, s.params.OwnerID); err != nil {
+	if err := s.ServiceDep.Repo.OwnerRepository.Delete(s.ctx, s.params.OwnerID); err != nil {
 		s.log.Error("Failed to delete test owner: %v", err)
 	}
 }

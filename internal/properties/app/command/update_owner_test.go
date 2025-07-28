@@ -42,7 +42,6 @@ func (s *UpdateOwnerTestSuite) SetupSuite() {
 		Name:      "John Doe",
 		Email:     "test@emails.com",
 		Telephone: "1234567890",
-		Server:    "Test",
 	}
 }
 
@@ -50,7 +49,6 @@ func (s *UpdateOwnerTestSuite) SetupTest() {
 	// Create an owner for testing
 	_, err := s.ServiceDep.Repo.OwnerRepository.New(
 		s.ctx,
-		s.params.Server,
 		owner.NewOwnerParams{
 			ID:        s.params.OwnerID,
 			Name:      "Jane Smith",
@@ -70,7 +68,7 @@ func (s *UpdateOwnerTestSuite) TestUpdateOwnerHandler() {
 	s.NoError(err, "Expected no error when creating a owner")
 
 	// Verify that the owner was updated successfully
-	owner, err := s.ServiceDep.Repo.OwnerRepository.Get(s.ctx, s.params.Server, s.params.OwnerID)
+	owner, err := s.ServiceDep.Repo.OwnerRepository.Get(s.ctx, s.params.OwnerID)
 	s.NoError(err, "Expected no error when finding the owner")
 	s.NotNil(owner, "Expected owner to be found")
 	s.Equal(s.params.Name, owner.Name(), "Expected owner name to match")

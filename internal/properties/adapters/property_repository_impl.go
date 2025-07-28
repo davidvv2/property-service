@@ -32,20 +32,20 @@ func NewCachedPropertyRepository(base property.Repository, redisAdapter *RedisCa
 }
 
 // generateCacheKey produces a key for caching single property items.
-func generateCacheKey(operation, server, identifier string) string {
-	return fmt.Sprintf("%s:%s:%s", operation, server, identifier)
+func generateCacheKey(operation, identifier string) string {
+	return fmt.Sprintf("%s:%s", operation, identifier)
 }
 
 // New creates a new property using the base repository.
 // For new properties, we can also cache the created object.
-func (c *CachedPropertyRepository) New(ctx context.Context, server string, parms property.NewPropertyParams) (*property.Property, error) {
+func (c *CachedPropertyRepository) New(ctx context.Context, parms property.NewPropertyParams) (*property.Property, error) {
 	// Create the property using the Mongo adapter.
-	newProp, err := c.baseRepo.New(ctx, server, parms)
+	newProp, err := c.baseRepo.New(ctx, parms)
 	if err != nil {
 		return nil, err
 	}
 	// Cache the newly created property.
-	key := generateCacheKey("get", server, newProp.ID)
+	key := generateCacheKey("get", newProp.ID)
 	data, err := json.Marshal(newProp)
 	if err == nil {
 		// We ignore cache errors so that caching issues do not block the main workflow.
@@ -56,13 +56,13 @@ func (c *CachedPropertyRepository) New(ctx context.Context, server string, parms
 }
 
 // Delete removes a property using the base repository and invalidates its cached entry.
-func (c *CachedPropertyRepository) Delete(ctx context.Context, server string, ID string) error {
+func (c *CachedPropertyRepository) Delete(ctx context.Context, ID string) error {
 	// Delete the property from Mongo.
-	if err := c.baseRepo.Delete(ctx, server, ID); err != nil {
+	if err := c.baseRepo.Delete(ctx, ID); err != nil {
 		return err
 	}
 	// Invalidate the cached property.
-	key := generateCacheKey("get", server, ID)
+	key := generateCacheKey("get", ID)
 	// Assuming our redis.Cacher supports a KeyDelete method; otherwise, adjust accordingly.
 	_ = c.redisAdapter.cacher.KeyDelete(ctx, key)
 	return nil
@@ -70,8 +70,8 @@ func (c *CachedPropertyRepository) Delete(ctx context.Context, server string, ID
 
 // Get retrieves a property: first it tries to fetch it from Redis cache,
 // and if the cache is empty (or data is corrupted), it retrieves from Mongo and caches the result.
-func (c *CachedPropertyRepository) Get(ctx context.Context, server string, ID string) (*property.Property, error) {
-	key := generateCacheKey("get", server, ID)
+func (c *CachedPropertyRepository) Get(ctx context.Context, ID string) (*property.Property, error) {
+	key := generateCacheKey("get", ID)
 
 	// Try to retrieve the property from Redis.
 	cachedData, err := c.redisAdapter.cacher.KeyGet(ctx, key)
@@ -85,7 +85,7 @@ func (c *CachedPropertyRepository) Get(ctx context.Context, server string, ID st
 	}
 
 	// Retrieve the property from the Mongo repository.
-	prop, err := c.baseRepo.Get(ctx, server, ID)
+	prop, err := c.baseRepo.Get(ctx, ID)
 	if err != nil {
 		return nil, err
 	}
@@ -99,14 +99,14 @@ func (c *CachedPropertyRepository) Get(ctx context.Context, server string, ID st
 }
 
 // Update uses the base repository to update a property and then invalidates its cache.
-func (c *CachedPropertyRepository) Update(ctx context.Context, server string, id string, params property.UpdatePropertyParams) error {
+func (c *CachedPropertyRepository) Update(ctx context.Context, id string, params property.UpdatePropertyParams) error {
 	// Update the property in Mongo.
-	err := c.baseRepo.Update(ctx, server, id, params)
+	err := c.baseRepo.Update(ctx, id, params)
 	if err != nil {
 		return err
 	}
 	// Invalidate the cache entry for the updated property.
-	key := generateCacheKey("get", server, id)
+	key := generateCacheKey("get", id)
 	_ = c.redisAdapter.cacher.KeyDelete(ctx, key)
 	return nil
 }
@@ -115,7 +115,7 @@ func (c *CachedPropertyRepository) Update(ctx context.Context, server string, id
 // first checking the Redis cache and then falling back to Mongo if needed.
 func (c *CachedPropertyRepository) ListByCategory(
 	ctx context.Context,
-	server string,
+
 	category string,
 	sort uint8,
 	limit uint16,
@@ -123,7 +123,7 @@ func (c *CachedPropertyRepository) ListByCategory(
 	search uint8,
 ) ([]property.Property, error) {
 	// Construct a cache key that uniquely identifies the query.
-	key := fmt.Sprintf("list:%s:%s:%s:%d:%d", server, category, paginationToken, sort, limit)
+	key := fmt.Sprintf("list:%s:%s:%d:%d", category, paginationToken, sort, limit)
 
 	// Attempt to get the cached list from Redis.
 	cachedData, err := c.redisAdapter.cacher.KeyGet(ctx, key)
@@ -137,7 +137,7 @@ func (c *CachedPropertyRepository) ListByCategory(
 	}
 
 	// Retrieve the list from the primary repository (Mongo).
-	props, err := c.baseRepo.ListByCategory(ctx, server, category, sort, limit, paginationToken, search)
+	props, err := c.baseRepo.ListByCategory(ctx, category, sort, limit, paginationToken, search)
 	if err != nil {
 		return nil, err
 	}

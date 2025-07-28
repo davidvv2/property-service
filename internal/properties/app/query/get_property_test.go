@@ -41,8 +41,7 @@ func (s *GetPropertyTestSuite) SetupSuite() {
 		s.validator,
 	)
 	s.params = query.GetPropertyQuery{
-		ID:     database.NewStringID(),
-		Server: "Test",
+		ID: database.NewStringID(),
 	}
 	s.newParams = property.NewPropertyParams{
 		PropertyID: s.params.ID,
@@ -65,7 +64,6 @@ func (s *GetPropertyTestSuite) SetupSuite() {
 
 	if _, err := s.ServiceDep.Repo.PropertyRepository.New(
 		s.ctx,
-		s.params.Server,
 		s.newParams,
 	); err != nil {
 		s.Fail("Failed to create property for testing", err)
@@ -85,7 +83,7 @@ func (s *GetPropertyTestSuite) TestCreatePropertyHandler() {
 
 func (s *GetPropertyTestSuite) TearDownSuite() {
 	// Clean up the test data
-	err := s.ServiceDep.Repo.PropertyRepository.Delete(s.ctx, s.params.Server, s.params.ID)
+	err := s.ServiceDep.Repo.PropertyRepository.Delete(s.ctx, s.params.ID)
 	if err != nil {
 		s.log.Error("Failed to delete property after test", err)
 	}

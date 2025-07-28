@@ -18,7 +18,6 @@ type CreateOwnerCommand struct {
 	Name      string `validate:"required"`
 	Email     string `validate:"required"`
 	Telephone string `validate:"required"`
-	Server    string `validate:"required"`
 }
 
 // CreateOwnerHandler is a CQRS endpoint that handles a command to create an owner.
@@ -59,7 +58,6 @@ func (cph CreateOwnerHandlerImpl) Handle(
 ) error {
 	if _, registerErr := cph.repository.New(
 		c,
-		cmd.Server,
 		owner.NewOwnerParams{
 			ID:        cmd.OwnerID,
 			Name:      cmd.Name,

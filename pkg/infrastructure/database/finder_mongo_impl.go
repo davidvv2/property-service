@@ -40,32 +40,32 @@ type FinderMongoImpl[
 		TimeQuery[string],
 		options.FindOptions, bson.M,
 	]
-	collectionSuffix string
+	collection string
 }
 
 func NewMongoFinder[DomainModel, DatabaseModel any](
 	log log.Logger,
-	collectionSuffix string,
+	collection string,
 	factory factory.Factory[DomainModel, DatabaseModel],
 	connector Connector[mongo.Client, mongo.ClientEncryption, mongo.Collection],
 	findOneOptions *options.FindOneOptions,
 	findOptions *options.FindOptions,
 ) *FinderMongoImpl[bson.M, DomainModel, DatabaseModel] {
 	return &FinderMongoImpl[bson.M, DomainModel, DatabaseModel]{
-		log:              log,
-		factory:          factory,
-		Connector:        connector,
-		collectionSuffix: collectionSuffix,
-		findOneOptions:   findOneOptions,
-		findOptions:      findOptions,
-		helper:           NewMongoQueryHelper(),
+		log:            log,
+		factory:        factory,
+		Connector:      connector,
+		collection:     collection,
+		findOneOptions: findOneOptions,
+		findOptions:    findOptions,
+		helper:         NewMongoQueryHelper(),
 	}
 }
 
 func (fmi *FinderMongoImpl[
 	Filter, DomainModel, DatabaseModel],
-) FindOne(c context.Context, server string, filter Filter) (*DomainModel, error) {
-	collection, err := fmi.Connector.GetCollection(server + fmi.collectionSuffix)
+) FindOne(c context.Context, filter Filter) (*DomainModel, error) {
+	collection, err := fmi.Connector.GetCollection(fmi.collection)
 	if err != nil {
 		return nil, errors.ErrCollectionNotFound
 	}
@@ -82,13 +82,13 @@ func (fmi *FinderMongoImpl[
 
 func (fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
 ) Find(
-	c context.Context, server string, filter Filter,
+	c context.Context, filter Filter,
 ) (<-chan *DomainModel, <-chan error, <-chan bool) {
 	results := make(chan *DomainModel, BatchSize)
 	errChan := make(chan error, BatchSize)
 	doneChan := make(chan bool, 1)
 
-	collection, err := fmi.Connector.GetCollection(server + fmi.collectionSuffix)
+	collection, err := fmi.Connector.GetCollection(fmi.collection)
 	if err != nil {
 		errChan <- errors.ErrCollectionNotFound
 		return nil, errChan, doneChan
@@ -107,7 +107,7 @@ func (fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
 }
 
 func (fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
-) FindByID(c context.Context, server, id string) (*DomainModel, error) {
+) FindByID(c context.Context, id string) (*DomainModel, error) {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, errors.NewRepositoryError(
@@ -115,43 +115,16 @@ func (fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
 			codes.Internal,
 		)
 	}
-	return fmi.FindOne(c, server, Filter(bson.M{"_id": oid}))
-}
-
-func (fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
-) FindByIDs(
-	c context.Context, server string, ids []string,
-) (<-chan *DomainModel, <-chan error, <-chan bool) {
-	userIDs, err := StringToBatchID(ids)
-	results, errChan, doneChan := fmi.createChannel(BatchSize * len(userIDs))
-	if err != nil {
-		errChan <- err
-		doneChan <- true
-		fmi.closeChannel(results, errChan, doneChan)
-		return results, errChan, doneChan
-	}
-	go func() {
-		var wg sync.WaitGroup
-		for i := 0; i < len(userIDs); i++ {
-			wg.Add(1)
-			fmi.log.Info("user ids being searched %+v", userIDs[i])
-			go fmi.find(c, server, Filter{"_id": bson.M{"$in": userIDs[i]}}, results, errChan, &wg)
-		}
-		wg.Wait()
-		doneChan <- true
-		fmi.closeChannel(results, errChan, doneChan)
-	}()
-
-	return results, errChan, doneChan
+	return fmi.FindOne(c, Filter(bson.M{"_id": oid}))
 }
 
 func (
 	fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
 ) find(
-	c context.Context, server string, filter Filter,
+	c context.Context, filter Filter,
 	results chan *DomainModel, errChan chan error, wg *sync.WaitGroup,
 ) {
-	collection, err := fmi.Connector.GetCollection(server + fmi.collectionSuffix)
+	collection, err := fmi.Connector.GetCollection(fmi.collection)
 	if err != nil {
 		errChan <- errors.ErrCollectionNotFound
 		return
@@ -183,9 +156,9 @@ func (
 func (
 	fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
 ) Count(
-	c context.Context, server string, filter Filter,
+	c context.Context, filter Filter,
 ) (int64, error) {
-	collection, err := fmi.Connector.GetCollection(server + fmi.collectionSuffix)
+	collection, err := fmi.Connector.GetCollection(fmi.collection)
 	if err != nil {
 		fmi.log.Error("Collection: %s Operation:Count Error:%+v", collection.Name(), err, errors.ErrCollectionNotFound)
 		return 0, errors.ErrCollectionNotFound
@@ -201,7 +174,7 @@ func (
 func (
 	fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
 ) DocumentExists(
-	c context.Context, server string, id string,
+	c context.Context, id string,
 ) (int64, error) {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -210,16 +183,16 @@ func (
 			codes.Internal,
 		)
 	}
-	return fmi.Count(c, server, Filter(bson.M{"_id": oid}))
+	return fmi.Count(c, Filter(bson.M{"_id": oid}))
 }
 
 func (fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
 ) Query(
-	c context.Context, server string, filter Filter, query Query[string],
+	c context.Context, filter Filter, query Query[string],
 ) (<-chan *DomainModel, <-chan error, <-chan bool) {
 	results, errChan, doneChan := fmi.createChannel(BatchSize)
 
-	collection, err := fmi.Connector.GetCollection(server + fmi.collectionSuffix)
+	collection, err := fmi.Connector.GetCollection(fmi.collection)
 	if err != nil {
 		errChan <- errors.ErrCollectionNotFound
 		return nil, errChan, doneChan
@@ -240,11 +213,11 @@ func (fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
 
 func (fmi *FinderMongoImpl[Filter, DomainModel, DatabaseModel],
 ) TimeQuery(
-	c context.Context, server string, filter Filter, query TimeQuery[string],
+	c context.Context, filter Filter, query TimeQuery[string],
 ) (<-chan *DomainModel, int64, <-chan error, <-chan bool) {
 	results, errChan, doneChan := fmi.createChannel(BatchSize)
 
-	collection, err := fmi.Connector.GetCollection(server + fmi.collectionSuffix)
+	collection, err := fmi.Connector.GetCollection(fmi.collection)
 	if err != nil {
 		errChan <- errors.ErrCollectionNotFound
 		return nil, 0, errChan, doneChan
